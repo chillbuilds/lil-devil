@@ -1,7 +1,73 @@
-//activities 
-// - store
-// - park
-// - 
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
+
+#define i2c_Address 0x3c
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET -1   //   QT-PY / XIAO
+Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define icon_height 12
+#define icon_width  12
+static const unsigned char PROGMEM food_icon[] =
+{ B00000000, B00000000,
+  B00000000, B00000000,
+  B00000000, B00000000,
+  B00011111, B10000000,
+  B00100000, B01000000,
+  B01000000, B00100000,
+  B01111111, B11100000,
+  B00111111, B11000000,
+  B00111111, B11000000,
+  B01000000, B00100000,
+  B01111111, B11100000,
+  B00000000, B00000000,
+};
+static const unsigned char PROGMEM poo_icon[] =
+{ B00000000, B00000000,
+  B00000001, B00000000,
+  B00000011, B00000000,
+  B00001111, B00000000,
+  B00001001, B00000000,
+  B00011111, B10000000,
+  B00100000, B01000000,
+  B00111111, B11000000,
+  B01000000, B00100000,
+  B01000000, B00100000,
+  B00111111, B11000000,
+  B00000000, B00000000,
+};
+static const unsigned char PROGMEM play_icon[] =
+{ B00000000, B00000000,
+  B00110000, B00000000,
+  B01001000, B00000000,
+  B01001000, B00000000,
+  B00110011, B10000000,
+  B01001100, B01000000,
+  B01001010, B10100000,
+  B01001000, B00100000,
+  B01001000, B10100000,
+  B01001100, B01000000,
+  B00110011, B10000000,
+  B00000000, B00000000,
+};
+static const unsigned char PROGMEM doctor_icon[] =
+{ B00000000, B00000000,
+  B01100011, B00000000,
+  B01000001, B00000000,
+  B01000001, B00000000,
+  B01000001, B00000000,
+  B00100010, B00000000,
+  B00011100, B00000000,
+  B00001000, B11000000,
+  B00001001, B00100000,
+  B00000101, B00100000,
+  B00000011, B11000000,
+  B00000000, B00000000,
+};
 
 const int leftBtn = 4;
 const int rightBtn = 5;
@@ -37,6 +103,14 @@ void setup() {
   pinMode(rightBtn, INPUT_PULLUP);
   pinMode(selectBtn, INPUT_PULLUP);
   pinMode(backBtn, INPUT_PULLUP);
+
+  delay(250); // wait for the OLED to power up
+  display.begin(i2c_Address, true); // Address 0x3C default
+//  display.setContrast (0); // dim display
+  display.setRotation(1); 
+
+  display.clearDisplay();
+  drawIcons();
 }
 
 void loop() {
@@ -162,4 +236,13 @@ void stats(){
   // hunger, poo, happiness, health lvls
   // set time
   // reset pet
+}
+
+void drawIcons() {
+  display.drawBitmap(2, 4,  food_icon, 12, 12, 1);
+  display.drawBitmap(18, 4,  poo_icon, 12, 12, 1);
+  display.drawBitmap(34, 4,  play_icon, 12, 12, 1);
+  display.drawBitmap(50, 4,  doctor_icon, 12, 12, 1);
+  display.display();
+  delay(1);
 }
