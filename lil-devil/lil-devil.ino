@@ -68,6 +68,34 @@ static const unsigned char PROGMEM doctor_icon[] =
   B00000011, B11000000,
   B00000000, B00000000,
 };
+static const unsigned char PROGMEM stats_icon[] =
+{ B00000000, B00000000,
+  B00000000, B11000000,
+  B00000000, B11000000,
+  B00000110, B11000000,
+  B00000110, B11000000,
+  B00110110, B11000000,
+  B00110110, B11000000,
+  B00110110, B11000000,
+  B00110110, B11000000,
+  B01111111, B11100000,
+  B01111111, B11100000,
+  B00000000, B00000000,
+};
+static const unsigned char PROGMEM clock_icon[] =
+{ B00000000, B00000000,
+  B00001111, B00000000,//1
+  B00110100, B11000000,//2
+  B00100100, B01000000,//3
+  B01000101, B00100000,//4
+  B01000110, B00100000,//5
+  B01000100, B00100000,//6
+  B01000000, B00100000,//7
+  B00100000, B01000000,//8
+  B00110000, B11000000,//9
+  B00001111, B00000000,//10
+  B00000000, B00000000,
+};
 
 const int leftBtn = 4;
 const int rightBtn = 5;
@@ -80,10 +108,9 @@ unsigned long previouspooLvlMillis = 0;
 unsigned long hungerLvlInterval = 4000UL;
 unsigned long pooLvlInterval = 2000UL;
 unsigned long hapinessInterval = 3000UL;
-unsigned long btnHoldDuration = 2000UL;
 
-const int optionsLength = 5;
-String options[optionsLength] = {"feed", "poo", "play", "doctor", "stats"};
+const int optionsLength = 6;
+String options[optionsLength] = {"feed", "poo", "play", "doctor", "stats", "time"};
 int currentOption = 0;
 bool atHome = true;
 
@@ -110,7 +137,7 @@ void setup() {
   display.setRotation(1); 
 
   display.clearDisplay();
-  drawIcons();
+  updateIcons();
 }
 
 void loop() {
@@ -123,6 +150,7 @@ void loop() {
     if(atHome == false){
       atHome = true;
       Serial.println("returned home");
+      updateIcons();
     }
     Serial.println("pressed back");
     delay(systemDelay);
@@ -131,10 +159,9 @@ void loop() {
   if(leftButtonState == LOW && atHome == true){
     currentOption--;
     if(currentOption < 0){
-      currentOption = 4;  
+      currentOption = optionsLength-1;  
     }
-    Serial.print("current option: ");
-    Serial.println(options[currentOption]);
+    updateIcons();
     delay(systemDelay);
   }
 
@@ -143,8 +170,7 @@ void loop() {
     if(currentOption > optionsLength-1){
       currentOption = 0;
     }
-    Serial.print("current option: ");
-    Serial.println(options[currentOption]);
+    updateIcons();
     delay(systemDelay);
   }
 
@@ -152,6 +178,8 @@ void loop() {
     Serial.print("selected: ");
     Serial.println(options[currentOption]);
     String selectedOption = options[currentOption];
+    display.clearDisplay();
+    display.display();
     if(selectedOption == "feed"){
       atHome = false;
       feed();
@@ -171,6 +199,10 @@ void loop() {
     if(selectedOption == "stats"){
       atHome = false;
       stats();
+    }
+    if(selectedOption == "time"){
+      atHome = false;
+      setTime();
     }
     Serial.print("at home: ");
     Serial.println(atHome);
@@ -238,11 +270,47 @@ void stats(){
   // reset pet
 }
 
-void drawIcons() {
+void setTime(){
+  
+}
+
+// xpos and ypos are rect origin point
+void updateIcons(){
+  display.clearDisplay();
+  drawIcons();
+  if(options[currentOption] == "feed"){
+    drawIconSelector(3, 16);
+  }
+  if(options[currentOption] == "poo"){
+    drawIconSelector(19, 16);
+  }
+  if(options[currentOption] == "play"){
+    drawIconSelector(34, 16);
+  }
+  if(options[currentOption] == "doctor"){
+    drawIconSelector(52, 16);
+  }
+  if(options[currentOption] == "stats"){
+     drawIconSelector(3, 124); 
+  }
+  if(options[currentOption] == "time"){
+     drawIconSelector(50, 124); 
+  }
+}
+
+void drawIcons(){
   display.drawBitmap(2, 4,  food_icon, 12, 12, 1);
   display.drawBitmap(18, 4,  poo_icon, 12, 12, 1);
-  display.drawBitmap(34, 4,  play_icon, 12, 12, 1);
-  display.drawBitmap(50, 4,  doctor_icon, 12, 12, 1);
+  display.drawBitmap(33, 4,  play_icon, 12, 12, 1);
+  display.drawBitmap(51, 4,  doctor_icon, 12, 12, 1);
+  display.drawBitmap(2, 112,  stats_icon, 12, 12, 1);
+  display.drawBitmap(49, 112,  clock_icon, 12, 12, 1);
+  display.display();
+  delay(1);
+}
+
+void drawIconSelector(int xPos, int yPos) {
+  display.drawRect(xPos, yPos, 10, 2, SH110X_WHITE);
   display.display();
   delay(1);
 }
