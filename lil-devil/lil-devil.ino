@@ -189,10 +189,20 @@ const unsigned char poop_1 [] PROGMEM = {
   0x02, 0x00, 0x06, 0x00, 0x0a, 0x00, 0x19, 0x00, 0x3d, 0x00, 0x63, 0x80, 0x40, 0xc0, 0x60, 0x40, 
   0x7f, 0xe0, 0xc0, 0x30, 0xc0, 0x30, 0x7f, 0xe0
 };
-const unsigned char poop_2 [] PROGMEM = {
-  // 16x16px
-  0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x05, 0x80, 0x04, 0xc0, 0x04, 0x60, 0x0f, 0xf0, 0x18, 0x10, 
-  0x3f, 0x90, 0x60, 0x78, 0x40, 0x0c, 0x70, 0x04, 0x7f, 0xfe, 0x80, 0x03, 0x40, 0x03, 0x7f, 0xfe
+const unsigned char fly [] PROGMEM = {
+  // 6x5px
+  0x84, 0x48, 0x30, 0x78, 0x60
+};
+const unsigned char syringe_icon [] PROGMEM = {
+  // 32x32px
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 
+  0x38, 0x00, 0x00, 0x00, 0x7d, 0xc0, 0x00, 0x00, 0x4f, 0x60, 0x00, 0x00, 0x06, 0x30, 0x00, 0x00, 
+  0x0c, 0x18, 0x00, 0x00, 0x08, 0x0c, 0x00, 0x00, 0x0c, 0x06, 0x00, 0x00, 0x06, 0x03, 0x00, 0x00, 
+  0x03, 0x05, 0x80, 0x00, 0x01, 0x8a, 0xc0, 0x00, 0x00, 0xd5, 0x60, 0x00, 0x00, 0x6a, 0xb0, 0x00, 
+  0x00, 0x35, 0x58, 0x00, 0x00, 0x1a, 0xac, 0x00, 0x00, 0x0d, 0x56, 0x00, 0x00, 0x06, 0xab, 0x00, 
+  0x00, 0x03, 0x55, 0x00, 0x00, 0x01, 0xab, 0x00, 0x00, 0x00, 0xd7, 0x00, 0x00, 0x00, 0x6e, 0x00, 
+  0x00, 0x00, 0x3d, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x20, 
+  0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00
 };
 
 const int leftBtn = 4;
@@ -209,12 +219,16 @@ unsigned long hapinessInterval = 3000UL;
 
 const int optionsLength = 6;
 String options[optionsLength] = {"feed", "poo", "play", "doctor", "stats", "time"};
-int currentOption = 4;
+int currentOption = 3;
 bool atHome = true;
 
 const int foodOptionsLegnth = 4;
 String foodOptions[foodOptionsLegnth] = {"pear", "cookie", "pizza", "steak"};
 int currentFoodOption = 0;
+
+const int healthOptionsLegnth = 2;
+String healthOptions[healthOptionsLegnth] = {"vitamins", "syringe"};
+int currentHealthOption = 0;
 
 int leftButtonState = 0;
 int rightButtonState = 0;
@@ -256,7 +270,7 @@ void setup() {
   display.display();
 
   renderSplashScreen();
-  delay(1000);
+  delay(8000);
 
   renderHome();
 
@@ -294,6 +308,15 @@ void loop() {
     delay(systemDelay);
   }
 
+  if (leftButtonState == LOW && options[currentOption] == "doctor" && atHome == false) {
+    currentHealthOption--;
+    if (currentHealthOption < 0) {
+      currentHealthOption = healthOptionsLegnth - 1;
+    }
+    doctor();
+    delay(systemDelay);
+  }
+
   if (rightButtonState == LOW && atHome == true) {
     currentOption++;
     if (currentOption > optionsLength - 1) {
@@ -311,7 +334,16 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "pear") {
+  if (rightButtonState == LOW && options[currentOption] == "doctor" && atHome == false) {
+    currentHealthOption++;
+    if (currentHealthOption > healthOptionsLegnth - 1) {
+      currentHealthOption = 0;
+    }
+    doctor();
+    delay(systemDelay);
+  }
+
+  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "pear" && options[currentOption] == "feed") {
     hungerLvl--;
     feed();
     delay(600);
@@ -319,7 +351,7 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "cookie") {
+  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "cookie" && options[currentOption] == "feed") {
     hungerLvl--;
     feed();
     delay(600);
@@ -327,7 +359,7 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "pizza") {
+  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "pizza" && options[currentOption] == "feed") {
     hungerLvl--;
     hungerLvl--;
     feed();
@@ -336,10 +368,28 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "steak") {
+  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "steak" && options[currentOption] == "feed") {
     hungerLvl--;
     hungerLvl--;
     feed();
+    delay(600);
+    atHome = true;
+    renderHome();
+    delay(systemDelay);
+  }
+
+  if (selectButtonState == LOW && atHome == false && healthOptions[currentHealthOption] == "vitamins" && options[currentOption] == "doctor") {
+    healthLvl++;
+    doctor();
+    delay(600);
+    atHome = true;
+    renderHome();
+    delay(systemDelay);
+  }
+  if (selectButtonState == LOW && atHome == false && healthOptions[currentHealthOption] == "syringe" && options[currentOption] == "doctor") {
+    healthLvl++;
+    healthLvl++;
+    doctor();
     delay(600);
     atHome = true;
     renderHome();
@@ -350,8 +400,6 @@ void loop() {
 
   if (selectButtonState == LOW && atHome == true) {
     String selectedOption = options[currentOption];
-    display.clearDisplay();
-    display.display();
     if (selectedOption == "feed") {
       atHome = false;
       feed();
@@ -359,6 +407,7 @@ void loop() {
     if (selectedOption == "poo") {
       if(poopTotal > 0){
         poopTotal--;
+        renderHome();
       }else{
         atHome = false;
         poo();  
@@ -425,44 +474,15 @@ void loop() {
   if (options[currentOption] == "stats" && atHome == false) {
     stats();
   }
-
+  if (options[currentOption] == "doctor" && atHome == false) {
+    doctor();
+  }
 }
 
 void renderSplashScreen() {
   display.clearDisplay();
   display.drawBitmap(0, 0,  splash_screen, 64, 128, 1);
   display.display();
-}
-
-void renderFood() {
-  if (currentFoodOption == 0) {
-    display.drawBitmap(14, 46,  pear_icon, 32, 32, 1);
-    display.setCursor(19 , 94);
-    display.print("pear");
-    display.setCursor(24 , 108);
-    display.print("+1");
-  }
-  if (currentFoodOption == 1) {
-    display.drawBitmap(14, 48,  cookie_icon, 32, 32, 1);
-    display.setCursor(14 , 94);
-    display.print("cookie");
-    display.setCursor(24 , 108);
-    display.print("+1");
-  }
-  if (currentFoodOption == 2) {
-    display.drawBitmap(14, 47,  pizza_icon, 32, 32, 1);
-    display.setCursor(18 , 94);
-    display.print("pizza");
-    display.setCursor(24 , 108);
-    display.print("+2");
-  }
-  if (currentFoodOption == 3) {
-    display.drawBitmap(14, 46,  steak_icon, 32, 32, 1);
-    display.setCursor(18 , 94);
-    display.print("steak");
-    display.setCursor(24 , 108);
-    display.print("+2");
-  }
 }
 
 void renderStatBar(int xPos, int yPos, int needLvl) {
@@ -492,24 +512,49 @@ void feed() {
   display.drawBitmap(4, 60,  left_icon, 4, 8, 1);
   display.drawBitmap(54, 60,  right_icon, 4, 8, 1);
 
-  renderFood();
+  if (currentFoodOption == 0) {
+    display.drawBitmap(14, 46,  pear_icon, 32, 32, 1);
+    display.setCursor(19 , 94);
+    display.print("pear");
+    display.setCursor(24 , 108);
+    display.print("+1");
+  }
+  if (currentFoodOption == 1) {
+    display.drawBitmap(14, 48,  cookie_icon, 32, 32, 1);
+    display.setCursor(14 , 94);
+    display.print("cookie");
+    display.setCursor(24 , 108);
+    display.print("+1");
+  }
+  if (currentFoodOption == 2) {
+    display.drawBitmap(14, 47,  pizza_icon, 32, 32, 1);
+    display.setCursor(18 , 94);
+    display.print("pizza");
+    display.setCursor(24 , 108);
+    display.print("+2");
+  }
+  if (currentFoodOption == 3) {
+    display.drawBitmap(14, 46,  steak_icon, 32, 32, 1);
+    display.setCursor(18 , 94);
+    display.print("steak");
+    display.setCursor(24 , 108);
+    display.print("+2");
+  }
 
   display.display();
-
-  // select food:
-  // - pear
-  // - cookie
-  // - pizza
-  // - steak
 }
 
 void poo() {
-  
+  display.clearDisplay();
+  display.display();
+  pooLvl = 0;
   // lower poo variable
   // animation of water washing over screen
   // remove poo from home screen if present
   // return home
   delay(1000);
+  atHome = true;
+  renderHome();
 }
 
 void play() {
@@ -517,6 +562,33 @@ void play() {
 }
 
 void doctor() {
+  display.clearDisplay();
+
+  display.setCursor(14 , 8);
+  display.print("health");
+
+  renderStatBar(5, 22, healthLvl);
+
+  if(healthOptions[currentHealthOption] == "vitamins"){
+    display.drawBitmap(14, 47,  syringe_icon, 32, 32, 1);
+    display.setCursor(8 , 94);
+    display.print("vitamins");
+    display.setCursor(24 , 108);
+    display.print("+1");
+  }
+
+  if(healthOptions[currentHealthOption] == "syringe"){
+    display.drawBitmap(14, 47,  syringe_icon, 32, 32, 1);
+    display.setCursor(12 , 94);
+    display.print("syringe");
+    display.setCursor(24 , 108);
+    display.print("+2");
+  }
+  
+  display.drawBitmap(4, 60,  left_icon, 4, 8, 1);
+  display.drawBitmap(54, 60,  right_icon, 4, 8, 1);
+
+  display.display();
 }
 
 void stats() {
@@ -597,6 +669,8 @@ void drawIcons() {
   if(poopTotal > 2){
     display.drawBitmap(poopPositions[2], poopPositions[5],  poop_1, 12, 12, 1); 
   }
+
+  display.drawBitmap(4 , 30,  fly, 6, 5, 1);
 }
 
 void drawIconSelector(int xPos, int yPos) {
