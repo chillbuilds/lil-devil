@@ -237,6 +237,7 @@ const int optionsLength = 7;
 String options[optionsLength] = {"feed", "poo", "play", "doctor", "sleep", "stats", "time"};
 int currentOption = 3;
 bool atHome = true;
+bool asleep = false;
 
 const int foodOptionsLegnth = 4;
 String foodOptions[foodOptionsLegnth] = {"pear", "cookie", "pizza", "steak"};
@@ -254,6 +255,7 @@ int backButtonState = 0;
 int hungerLvl = 1;
 int pooLvl = 1;
 int happinessLvl = 3;
+int tiredLvl = 1;
 int healthLvl = 4;
 
 int poopTotal = 0;
@@ -399,7 +401,6 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-
   if (selectButtonState == LOW && atHome == false && healthOptions[currentHealthOption] == "vitamins" && options[currentOption] == "doctor") {
     healthLvl++;
     doctor();
@@ -416,6 +417,12 @@ void loop() {
     atHome = true;
     renderHome();
     delay(systemDelay);
+  }
+
+
+  if (digitalRead(selectBtn) == LOW && asleep == true && atHome == false) {
+    asleep = false;
+    renderHome();
   }
 
   selectButtonState = digitalRead(selectBtn);
@@ -439,14 +446,14 @@ void loop() {
       atHome = false;
       play();
     }
+    if (selectedOption == "sleep") {
+      asleep = true;
+      atHome = false;
+      sleep();
+    }
     if (selectedOption == "doctor") {
       atHome = false;
       doctor();
-    }
-
-    if (selectedOption == "sleep") {
-      atHome = false;
-      sleep();
     }
     if (selectedOption == "stats") {
       atHome = false;
@@ -666,41 +673,36 @@ void setTime() {
 void renderHome() {
   display.clearDisplay();
 
-  drawIcons();
-  if (options[currentOption] == "feed") {
-    drawIconSelector(3, 16);
-  }
-  if (options[currentOption] == "poo") {
-    drawIconSelector(19, 16);
-  }
-  if (options[currentOption] == "play") {
-    drawIconSelector(35, 16);
-  }
-  if (options[currentOption] == "doctor") {
-    drawIconSelector(51, 16);
-  }
-  if (options[currentOption] == "sleep") {
-    drawIconSelector(9, 122);
-  }
-  if (options[currentOption] == "stats") {
-    drawIconSelector(27, 122);
-  }
-  if (options[currentOption] == "time") {
-    drawIconSelector(46, 122);
-  }
-  display.display();
-}
-
-void drawIcons() {
-
   display.drawBitmap(14 , 48,  devil, 32, 32, 1);
   display.drawBitmap(2, 4,  food_icon, 12, 12, 1);
   display.drawBitmap(18, 4,  poo_icon, 12, 12, 1);
   display.drawBitmap(34, 4,  play_icon, 12, 12, 1);
-  display.drawBitmap(50, 4,  doctor_icon, 12, 12, 1);
+  display.drawBitmap(49, 4,  doctor_icon, 12, 12, 1);
   display.drawBitmap(8, 110,  sleep_icon, 12, 12, 1);
   display.drawBitmap(26, 110,  stats_icon, 12, 12, 1);
   display.drawBitmap(45, 110,  clock_icon, 12, 12, 1);
+
+  if (options[currentOption] == "feed") {
+    display.drawRect(3, 16, 10, 2, SH110X_WHITE);
+  }
+  if (options[currentOption] == "poo") {
+    display.drawRect(19, 16, 10, 2, SH110X_WHITE);
+  }
+  if (options[currentOption] == "play") {
+    display.drawRect(35, 16, 10, 2, SH110X_WHITE);
+  }
+  if (options[currentOption] == "doctor") {
+    display.drawRect(51, 16, 10, 2, SH110X_WHITE);
+  }
+  if (options[currentOption] == "sleep") {
+    display.drawRect(9, 122, 10, 2, SH110X_WHITE);
+  }
+  if (options[currentOption] == "stats") {
+    display.drawRect(27, 122, 10, 2, SH110X_WHITE);
+  }
+  if (options[currentOption] == "time") {
+    display.drawRect(46, 122, 10, 2, SH110X_WHITE);
+  }
 
   if (poopTotal > 0) {
     display.drawBitmap(poopPosition[0], poopPosition[3],  poop_1, 12, 12, 1);
@@ -713,10 +715,7 @@ void drawIcons() {
     display.drawBitmap(poopPosition[2], poopPosition[5],  poop_1, 12, 12, 1);
     display.drawBitmap(flyPosition[1] , flyPosition[3],  fly, 6, 5, 1);
   }
-}
 
-void drawIconSelector(int xPos, int yPos) {
-  display.drawRect(xPos, yPos, 10, 2, SH110X_WHITE);
   display.display();
 }
 
