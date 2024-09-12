@@ -235,7 +235,8 @@ unsigned long hapinessInterval = 3000UL;
 
 const int optionsLength = 7;
 String options[optionsLength] = {"feed", "poo", "play", "doctor", "sleep", "stats", "time"};
-int currentOption = 3;
+int currentOption = 5;
+
 bool atHome = true;
 bool asleep = false;
 
@@ -639,29 +640,34 @@ void sleep() {
 void stats() {
   display.clearDisplay();
 
-  display.drawRect(5, 34, 54, 1, SH110X_WHITE);
-  display.drawRect(5, 64, 54, 1, SH110X_WHITE);
-  display.drawRect(5, 95, 54, 1, SH110X_WHITE);
+  // display.drawRect(5, 26, 54, 1, SH110X_WHITE);
+  // display.drawRect(5, 51, 54, 1, SH110X_WHITE);
+  // display.drawRect(5, 76, 54, 1, SH110X_WHITE);
+  // display.drawRect(5, 101, 54, 1, SH110X_WHITE);
 
-  display.drawBitmap(2, 6,  food_icon, 12, 12, 1);
-  display.drawBitmap(2, 36,  poo_icon, 12, 12, 1);
-  display.drawBitmap(2, 66,  play_icon, 12, 12, 1);
-  display.drawBitmap(2, 96,  doctor_icon, 12, 12, 1);
+  display.drawBitmap(4, 2,  food_icon, 12, 12, 1);
+  display.drawBitmap(4, 27,  poo_icon, 12, 12, 1);
+  display.drawBitmap(4, 52,  play_icon, 12, 12, 1);
+  display.drawBitmap(4, 77,  doctor_icon, 12, 12, 1);
+  display.drawBitmap(4, 102,  sleep_icon, 12, 12, 1);
 
-  display.setCursor(16 , 10);
+  display.setCursor(17 , 6);
   display.print("hunger");
-  display.setCursor(16 , 40);
+  display.setCursor(17 , 31);
   display.print("poo");
-  display.setCursor(16 , 70);
+  display.setCursor(17 , 56);
   display.print("happy");
-  display.setCursor(16 , 100);
+  display.setCursor(17 , 81);
   display.print("health");
+  display.setCursor(17 , 106);
+  display.print("sleepy");
 
 
-  renderStatBar(5, 22, hungerLvl);
-  renderStatBar(5, 52, pooLvl);
-  renderStatBar(5, 82, happinessLvl);
-  renderStatBar(5, 112, healthLvl);
+  renderStatBar(5, 15, hungerLvl);
+  renderStatBar(5, 40, pooLvl);
+  renderStatBar(5, 65, happinessLvl);
+  renderStatBar(5, 90, healthLvl);
+  renderStatBar(5, 115, tiredLvl);
 
   display.display();
 }
