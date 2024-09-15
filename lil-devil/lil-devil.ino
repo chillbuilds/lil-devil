@@ -225,11 +225,14 @@ const int selectBtn = 6;
 const int backBtn = 7;
 const int systemDelay = 150;
 
-unsigned long previoushungerLvlMillis = 0;
-unsigned long previouspooLvlMillis = 0;
+unsigned long previousHungerLvlMillis = 0;
+unsigned long previousPooLvlMillis = 0;
+unsigned long previousSleepLvlMillis = 0;
+
 unsigned long hungerLvlInterval = 10000UL;
 unsigned long pooLvlInterval = 2000UL;
-unsigned long hapinessInterval = 3000UL;
+unsigned long happinessLvlInterval = 3000UL;
+unsigned long sleepLvlInterval = 10000UL;
 
 const int optionsLength = 7;
 String options[optionsLength] = {"feed", "poo", "play", "doctor", "sleep", "stats", "time"};
@@ -256,6 +259,7 @@ int pooLvl = 1;
 int happinessLvl = 3;
 int tiredLvl = 1;
 int healthLvl = 4;
+int sleepLvl = 2;
 
 int poopTotal = 0;
 int poopPosition[6];
@@ -282,7 +286,7 @@ void setup() {
   pinMode(selectBtn, INPUT_PULLUP);
   pinMode(backBtn, INPUT_PULLUP);
 
-  delay(250); // wait for the OLED to power up
+  delay(500); // wait for the OLED to power up
   display.begin(i2c_Address, true); // Address 0x3C default
   display.setContrast (0); // dim display
   display.setRotation(1);
@@ -465,18 +469,20 @@ void loop() {
     delay(systemDelay);
   }
 
-  unsigned long currentMillis = millis();
+  unsigned long hungerMillis = millis();
+  unsigned long pooMillis = millis();
+  unsigned long sleepMillis = millis();
 
-  if (currentMillis - previoushungerLvlMillis >= hungerLvlInterval) {
-    previoushungerLvlMillis = currentMillis; // Reset the timer
+  if (hungerMillis - previousHungerLvlMillis >= hungerLvlInterval) {
+    previousHungerLvlMillis = hungerMillis; // Reset the timer
 
     if (hungerLvl < 4) {
       hungerLvl++;
     }
   }
 
-  if (currentMillis - previouspooLvlMillis >= pooLvlInterval) {
-    previouspooLvlMillis = currentMillis; // Reset the timer
+  if (pooMillis - previousPooLvlMillis >= pooLvlInterval) {
+    previousPooLvlMillis = pooMillis; // Reset the timer
 
     if (pooLvl < 5) {
       pooLvl++;
@@ -491,8 +497,19 @@ void loop() {
     }
   }
 
+  if (sleepMillis - previousSleepLvlMillis >= sleepLvlInterval) {
+    previousSleepLvlMillis = sleepMillis; // Reset the timer
+
+    if (sleepLvl < 4) {
+      sleepLvl++;
+    }
+  }
+
   if (hungerLvl < 0) {
     hungerLvl = 0;
+  }
+  if (happinessLvl < 0) {
+    happinessLvl = 0;
   }
 
   if (atHome == true) {
@@ -507,6 +524,12 @@ void loop() {
   }
   if (options[currentOption] == "doctor" && atHome == false) {
     doctor();
+  }
+  if (options[currentOption] == "sleep" && atHome == false) {
+    sleep();
+  }
+  if (options[currentOption] == "play" && atHome == false) {
+    play();
   }
 
 }
@@ -590,7 +613,36 @@ void poo() {
 }
 
 void play() {
+  if (happinessLvl < 0) {
+    happinessLvl = 0;
+  }
+
   display.clearDisplay();
+
+  display.setCursor(14 , 8);
+  display.print("happy");
+
+  renderStatBar(5, 22, happinessLvl);
+
+  if (healthOptions[currentHealthOption] == "vitamins") {
+    display.drawBitmap(16, 47,  vitamins_icon, 32, 32, 1);
+    display.setCursor(8 , 94);
+    display.print("vitamins");
+    display.setCursor(24 , 108);
+    display.print("+1");
+  }
+
+  if (healthOptions[currentHealthOption] == "syringe") {
+    display.drawBitmap(16, 47,  syringe_icon, 32, 32, 1);
+    display.setCursor(11 , 94);
+    display.print("syringe");
+    display.setCursor(24 , 108);
+    display.print("+2");
+  }
+
+  display.drawBitmap(4, 60,  left_icon, 4, 8, 1);
+  display.drawBitmap(54, 60,  right_icon, 4, 8, 1);
+
   display.display();
 }
 
@@ -633,8 +685,6 @@ void sleep() {
   display.clearDisplay();
   display.display();
   delay(systemDelay);
-  atHome = false;
-  
 }
 
 void stats() {
