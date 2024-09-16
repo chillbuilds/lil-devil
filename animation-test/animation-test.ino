@@ -77,25 +77,30 @@ void setup() {
 
 void loop() {
 
+  display.clearDisplay();
+
   unsigned long animationMillis = millis();
+
+  if(currentFrame > 3){
+    currentFrame = 0;
+  }
+  if(currentFrame == 0){
+    display.drawBitmap(16, 48,  devil_bounce_0, 32, 32, 1);
+  }
+  if(currentFrame == 1){
+    display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
+  }
+  if(currentFrame == 2){
+    display.drawBitmap(16, 48,  devil_bounce_2, 32, 32, 1);
+  }
+  if(currentFrame == 3){
+    display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
+  }
 
   if (animationMillis - previousAnimationMillis >= animationDelay) {
     previousAnimationMillis = animationMillis; // Reset the timer
-    if(currentFrame > 3){
-      currentFrame = 0;
-    }
-    if(currentFrame == 0){
-      display.drawBitmap(16, 48,  devil_bounce_0, 32, 32, 1);
-    }
-    if(currentFrame == 1){
-      display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
-    }
-    if(currentFrame == 2){
-      display.drawBitmap(16, 48,  devil_bounce_2, 32, 32, 1);
-    }
-    if(currentFrame == 3){
-      display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
-    }
     currentFrame++;
   }
+
+  display.display();
 }

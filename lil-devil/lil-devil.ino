@@ -264,7 +264,10 @@ const int rightBtn = 5;
 const int selectBtn = 6;
 const int backBtn = 7;
 const int systemDelay = 150;
+
+unsigned long previousAnimationMillis = 0;
 const int animationDelay = 167;
+int currentFrame = 0;
 
 unsigned long previousHungerLvlMillis = 0;
 unsigned long previousPooLvlMillis = 0;
@@ -512,6 +515,7 @@ void loop() {
   unsigned long hungerMillis = millis();
   unsigned long pooMillis = millis();
   unsigned long sleepMillis = millis();
+  unsigned long animationMillis = millis();
 
   if (hungerMillis - previousHungerLvlMillis >= hungerLvlInterval) {
     previousHungerLvlMillis = hungerMillis; // Reset the timer
@@ -545,6 +549,16 @@ void loop() {
     }
   }
 
+  if (animationMillis - previousAnimationMillis >= animationDelay) {
+    previousAnimationMillis = animationMillis; // Reset the timer
+
+    currentFrame++;
+
+    if(currentFrame > 3){
+      currentFrame = 0;
+    }
+  }
+
   if (hungerLvl < 0) {
     hungerLvl = 0;
   }
@@ -571,6 +585,9 @@ void loop() {
   if (options[currentOption] == "play" && atHome == false) {
     play();
   }
+
+  Serial.print("left btn state: ");
+  Serial.println(leftButtonState);
 
 }
 
@@ -775,7 +792,20 @@ void setTime() {
 void renderHome() {
   display.clearDisplay();
 
-  display.drawBitmap(14 , 48,  devil, 32, 32, 1);
+  if(currentFrame == 0){
+    display.drawBitmap(16, 48,  devil_bounce_0, 32, 32, 1);
+  }
+  if(currentFrame == 1){
+    display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
+  }
+  if(currentFrame == 2){
+    display.drawBitmap(16, 48,  devil_bounce_2, 32, 32, 1);
+  }
+  if(currentFrame == 3){
+    display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
+  }
+
+  // display.drawBitmap(14 , 48,  devil, 32, 32, 1);
   display.drawBitmap(2, 4,  food_icon, 12, 12, 1);
   display.drawBitmap(18, 4,  poo_icon, 12, 12, 1);
   display.drawBitmap(34, 4,  play_icon, 12, 12, 1);
