@@ -236,6 +236,26 @@ const unsigned char fly [] PROGMEM = {
   // 6x5px
   0x84, 0x48, 0x30, 0x78, 0x60
 };
+const unsigned char fly_0 [] PROGMEM = {
+  // 16x8
+	0x84, 0x00, 0x48, 0x00, 0x30, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+const unsigned char fly_1 [] PROGMEM = {
+  // 16x8
+	0x00, 0x00, 0x08, 0x20, 0x04, 0x40, 0x03, 0x80, 0x07, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+const unsigned char fly_2 [] PROGMEM = {
+  // 16x8
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x00, 0x12, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x00
+};
+const unsigned char fly_3 [] PROGMEM = {
+  // 16x8
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x10, 0x02, 0x20, 0x01, 0xc0, 0x01, 0xe0, 0x00, 0x00
+};
+const unsigned char fly_4 [] PROGMEM = {
+  // 16x8
+	0x00, 0x00, 0x00, 0x00, 0x21, 0x00, 0x12, 0x00, 0x0c, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00
+};
 const unsigned char syringe [] PROGMEM = {
 	// 12x3px
   0xbf, 0x00, 0xe7, 0xf0, 0xbf, 0x00
@@ -279,6 +299,8 @@ const int systemDelay = 150;
 unsigned long previousAnimationMillis = 0;
 const int animationDelay = 167;
 int currentFrame = 0;
+
+int currentFlyFrame = 0;
 
 unsigned long previousHungerLvlMillis = 0;
 unsigned long previousPooLvlMillis = 0;
@@ -414,6 +436,12 @@ void loop() {
 
     if(currentFrame > 3){
       currentFrame = 0;
+    }
+
+    currentFlyFrame++;
+
+    if(currentFlyFrame > 4){
+      currentFlyFrame = 0;
     }
   }
 
@@ -865,16 +893,40 @@ void renderHome() {
   }
   if (poopTotal > 1) {
     display.drawBitmap(poopPosition[1], poopPosition[4],  poop_1, 12, 12, 1);
-    display.drawBitmap(flyPosition[0] , flyPosition[2],  fly, 6, 5, 1);
+    if(currentFlyFrame == 0){
+      display.drawBitmap(4, 22,  fly_0, 16, 8, 1);
+    }
+    if(currentFlyFrame == 1){
+      display.drawBitmap(4, 22,  fly_1, 16, 8, 1);
+    }
+    if(currentFlyFrame == 2){
+      display.drawBitmap(4, 22,  fly_2, 16, 8, 1);
+    }
+    if(currentFlyFrame == 3){
+      display.drawBitmap(4, 22,  fly_3, 16, 8, 1);
+    }
+    if(currentFlyFrame == 4){
+      display.drawBitmap(4, 22,  fly_4, 16, 8, 1);
+    }
   }
   if (poopTotal > 2) {
     display.drawBitmap(poopPosition[2], poopPosition[5],  poop_1, 12, 12, 1);
-    display.drawBitmap(flyPosition[1] , flyPosition[3],  fly, 6, 5, 1);
+    if(currentFlyFrame == 0){
+      display.drawBitmap(28, 30,  fly_2, 16, 8, 1);
+    }
+    if(currentFlyFrame == 1){
+      display.drawBitmap(28, 30,  fly_3, 16, 8, 1);
+    }
+    if(currentFlyFrame == 2){
+      display.drawBitmap(28, 30,  fly_4, 16, 8, 1);
+    }
+    if(currentFlyFrame == 3){
+      display.drawBitmap(28, 30,  fly_0, 16, 8, 1);
+    }
+    if(currentFlyFrame == 4){
+      display.drawBitmap(28, 30,  fly_1, 16, 8, 1);
+    }
   }
-
-  display.drawBitmap(2 , 54,  syringe, 12, 3, 1);
-  // display.drawBitmap(2 , 68,  vitamins, 12, 11, 1);
-  
 
   display.display();
 }
