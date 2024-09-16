@@ -273,6 +273,10 @@ unsigned long previousHungerLvlMillis = 0;
 unsigned long previousPooLvlMillis = 0;
 unsigned long previousSleepLvlMillis = 0;
 
+unsigned long previousSystemDelayMillis = 0;
+int systemDelayInterval = 300;
+bool buttonCooldown = false;
+
 unsigned long hungerLvlInterval = 10000UL;
 unsigned long pooLvlInterval = 2000UL;
 unsigned long happinessLvlInterval = 3000UL;
@@ -347,6 +351,60 @@ void setup() {
 }
 
 void loop() {
+  
+  unsigned long hungerMillis = millis();
+  unsigned long pooMillis = millis();
+  unsigned long sleepMillis = millis();
+  unsigned long animationMillis = millis();
+  unsigned long systemDelayMillis = millis();
+
+  if (systemDelayMillis - previousSystemDelayMillis >= systemDelayInterval) {
+    previousSystemDelayMillis = systemDelayMillis; // Reset the timer
+
+    buttonCooldown = false;
+  }
+
+  if (hungerMillis - previousHungerLvlMillis >= hungerLvlInterval) {
+    previousHungerLvlMillis = hungerMillis; // Reset the timer
+
+    if (hungerLvl < 4) {
+      hungerLvl++;
+    }
+  }
+
+  if (pooMillis - previousPooLvlMillis >= pooLvlInterval) {
+    previousPooLvlMillis = pooMillis; // Reset the timer
+
+    if (pooLvl < 5) {
+      pooLvl++;
+    }
+    if (pooLvl >= 5) {
+      // he shid"
+      healthLvl--;
+      pooLvl = 0;
+      if (poopTotal < 3) {
+        poopTotal++;
+      }
+    }
+  }
+
+  if (sleepMillis - previousSleepLvlMillis >= sleepLvlInterval) {
+    previousSleepLvlMillis = sleepMillis; // Reset the timer
+
+    if (sleepLvl < 4) {
+      sleepLvl++;
+    }
+  }
+
+  if (animationMillis - previousAnimationMillis >= animationDelay) {
+    previousAnimationMillis = animationMillis; // Reset the timer
+
+    currentFrame++;
+
+    if(currentFrame > 3){
+      currentFrame = 0;
+    }
+  }
 
   leftButtonState = digitalRead(leftBtn);
   rightButtonState = digitalRead(rightBtn);
@@ -361,13 +419,14 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (leftButtonState == LOW && atHome == true) {
+  if (leftButtonState == LOW && atHome == true && buttonCooldown == false) {
+    buttonCooldown = true;
+    previousSystemDelayMillis = systemDelayMillis;
     currentOption--;
     if (currentOption < 0) {
       currentOption = optionsLength - 1;
     }
     renderHome();
-    delay(systemDelay);
   }
   if (leftButtonState == LOW && options[currentOption] == "feed" && atHome == false) {
     currentFoodOption--;
@@ -387,13 +446,14 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (rightButtonState == LOW && atHome == true) {
+  if (rightButtonState == LOW && atHome == true && buttonCooldown == false) {
+    buttonCooldown = true;
+    previousSystemDelayMillis = systemDelayMillis;
     currentOption++;
     if (currentOption > optionsLength - 1) {
       currentOption = 0;
     }
     renderHome();
-    delay(systemDelay);
   }
   if (rightButtonState == LOW && options[currentOption] == "feed" && atHome == false) {
     currentFoodOption++;
@@ -510,53 +570,6 @@ void loop() {
       setTime();
     }
     delay(systemDelay);
-  }
-
-  unsigned long hungerMillis = millis();
-  unsigned long pooMillis = millis();
-  unsigned long sleepMillis = millis();
-  unsigned long animationMillis = millis();
-
-  if (hungerMillis - previousHungerLvlMillis >= hungerLvlInterval) {
-    previousHungerLvlMillis = hungerMillis; // Reset the timer
-
-    if (hungerLvl < 4) {
-      hungerLvl++;
-    }
-  }
-
-  if (pooMillis - previousPooLvlMillis >= pooLvlInterval) {
-    previousPooLvlMillis = pooMillis; // Reset the timer
-
-    if (pooLvl < 5) {
-      pooLvl++;
-    }
-    if (pooLvl >= 5) {
-      // he shid"
-      healthLvl--;
-      pooLvl = 0;
-      if (poopTotal < 3) {
-        poopTotal++;
-      }
-    }
-  }
-
-  if (sleepMillis - previousSleepLvlMillis >= sleepLvlInterval) {
-    previousSleepLvlMillis = sleepMillis; // Reset the timer
-
-    if (sleepLvl < 4) {
-      sleepLvl++;
-    }
-  }
-
-  if (animationMillis - previousAnimationMillis >= animationDelay) {
-    previousAnimationMillis = animationMillis; // Reset the timer
-
-    currentFrame++;
-
-    if(currentFrame > 3){
-      currentFrame = 0;
-    }
   }
 
   if (hungerLvl < 0) {
