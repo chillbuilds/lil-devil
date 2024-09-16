@@ -343,7 +343,21 @@ int healthLvl = 4;
 
 int poopTotal = 0;
 int poopPosition[6];
-int flyPosition[4];
+
+const int flyPositions1[][2] = {
+  {4, 22},
+  {8, 23},
+  {13, 24},
+  {8, 25},
+  {6, 23}
+};
+const int flyPositions2[][2] = {
+  {39, 24},
+  {34, 25},
+  {32, 23},
+  {30, 22},
+  {34, 23}
+};
 
 void setup() {
 
@@ -354,11 +368,6 @@ void setup() {
   poopPosition[3] = getRandomNumber(86, 95);
   poopPosition[4] = getRandomNumber(86, 95);
   poopPosition[5] = getRandomNumber(86, 95);
-
-  flyPosition[0] = getRandomNumber(4, 24);
-  flyPosition[1] = getRandomNumber(29, 48);
-  flyPosition[2] = getRandomNumber(26, 36);
-  flyPosition[3] = getRandomNumber(26, 36);
 
   Serial.begin(9600);
   pinMode(leftBtn, INPUT_PULLUP);
@@ -438,11 +447,8 @@ void loop() {
       currentFrame = 0;
     }
 
-    currentFlyFrame++;
+    currentFlyFrame = (currentFlyFrame + 1) % 5; // increment and loop to 0
 
-    if(currentFlyFrame > 4){
-      currentFlyFrame = 0;
-    }
   }
 
   leftButtonState = digitalRead(leftBtn);
@@ -893,39 +899,11 @@ void renderHome() {
   }
   if (poopTotal > 1) {
     display.drawBitmap(poopPosition[1], poopPosition[4],  poop_1, 12, 12, 1);
-    if(currentFlyFrame == 0){
-      display.drawBitmap(4, 22,  fly_0, 16, 8, 1);
-    }
-    if(currentFlyFrame == 1){
-      display.drawBitmap(4, 22,  fly_1, 16, 8, 1);
-    }
-    if(currentFlyFrame == 2){
-      display.drawBitmap(4, 22,  fly_2, 16, 8, 1);
-    }
-    if(currentFlyFrame == 3){
-      display.drawBitmap(4, 22,  fly_3, 16, 8, 1);
-    }
-    if(currentFlyFrame == 4){
-      display.drawBitmap(4, 22,  fly_4, 16, 8, 1);
-    }
+    display.drawBitmap(flyPositions1[currentFlyFrame][0], flyPositions1[currentFlyFrame][1], fly, 6, 5, 1);
   }
   if (poopTotal > 2) {
     display.drawBitmap(poopPosition[2], poopPosition[5],  poop_1, 12, 12, 1);
-    if(currentFlyFrame == 0){
-      display.drawBitmap(28, 30,  fly_2, 16, 8, 1);
-    }
-    if(currentFlyFrame == 1){
-      display.drawBitmap(28, 30,  fly_3, 16, 8, 1);
-    }
-    if(currentFlyFrame == 2){
-      display.drawBitmap(28, 30,  fly_4, 16, 8, 1);
-    }
-    if(currentFlyFrame == 3){
-      display.drawBitmap(28, 30,  fly_0, 16, 8, 1);
-    }
-    if(currentFlyFrame == 4){
-      display.drawBitmap(28, 30,  fly_1, 16, 8, 1);
-    }
+    display.drawBitmap(flyPositions2[currentFlyFrame][0], flyPositions2[currentFlyFrame][1], fly, 6, 5, 1);
   }
 
   display.display();
