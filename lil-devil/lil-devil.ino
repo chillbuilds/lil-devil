@@ -157,11 +157,25 @@ const unsigned char devil_bounce_2 [] PROGMEM = {
 	0x00, 0xc0, 0x03, 0x00, 0x00, 0x70, 0x1c, 0x00, 0x00, 0x0f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-const unsigned char* const bounce_bitmaps_lg[] PROGMEM = {
-    devil_bounce_0,
-    devil_bounce_1,
-    devil_bounce_2,
-    devil_bounce_1,
+const unsigned char hop_0 [] PROGMEM = {
+	// 12x12px
+	0x00, 0x00, 0x40, 0x20, 0x6f, 0x60, 0x70, 0xe0, 0x20, 0x40, 0x52, 0x20, 0x40, 0x20, 0x40, 0x20, 
+	0x5e, 0x20, 0x20, 0x40, 0x30, 0xc0, 0x0f, 0x00
+};
+const unsigned char hop_1 [] PROGMEM = {
+	// 12x12px
+	0x20, 0x40, 0x36, 0xc0, 0x39, 0xc0, 0x10, 0x80, 0x2a, 0x40, 0x20, 0x40, 0x20, 0x40, 0x20, 0x40, 
+	0x3e, 0x40, 0x10, 0x80, 0x19, 0x80, 0x06, 0x00
+};
+const unsigned char hop_2 [] PROGMEM = {
+	// 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x10, 0xdf, 0xb0, 0xe0, 0x70, 0x40, 0x20, 0x92, 0x10, 
+	0x80, 0x10, 0x5e, 0x20, 0x60, 0x60, 0x1f, 0x80
+};
+const unsigned char hop_3 [] PROGMEM = {
+	// 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x10, 0xdf, 0xb0, 0xe0, 0x70, 0x40, 0x20, 0x84, 0x90, 
+	0x80, 0x10, 0x47, 0xa0, 0x60, 0x60, 0x1f, 0x80
 };
 
 const unsigned char left_icon [] PROGMEM = {
@@ -236,26 +250,6 @@ const unsigned char fly [] PROGMEM = {
   // 6x5px
   0x84, 0x48, 0x30, 0x78, 0x60
 };
-const unsigned char fly_0 [] PROGMEM = {
-  // 16x8
-	0x84, 0x00, 0x48, 0x00, 0x30, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-const unsigned char fly_1 [] PROGMEM = {
-  // 16x8
-	0x00, 0x00, 0x08, 0x20, 0x04, 0x40, 0x03, 0x80, 0x07, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-const unsigned char fly_2 [] PROGMEM = {
-  // 16x8
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x00, 0x12, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x00
-};
-const unsigned char fly_3 [] PROGMEM = {
-  // 16x8
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x10, 0x02, 0x20, 0x01, 0xc0, 0x01, 0xe0, 0x00, 0x00
-};
-const unsigned char fly_4 [] PROGMEM = {
-  // 16x8
-	0x00, 0x00, 0x00, 0x00, 0x21, 0x00, 0x12, 0x00, 0x0c, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00
-};
 const unsigned char syringe [] PROGMEM = {
 	// 12x3px
   0xbf, 0x00, 0xe7, 0xf0, 0xbf, 0x00
@@ -289,6 +283,29 @@ const unsigned char vitamins_icon [] PROGMEM = {
   0x40, 0x02, 0x20, 0x08, 0x40, 0x01, 0xc0, 0x08, 0x40, 0x00, 0x00, 0x08, 0x7f, 0xff, 0xff, 0xf8,
   0x40, 0x00, 0x00, 0x08, 0x40, 0x00, 0x00, 0x08, 0x20, 0x00, 0x00, 0x10, 0x1f, 0xff, 0xff, 0xe0
 };
+const unsigned char devil_head [] PROGMEM = {
+	// 48x17px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 
+	0x00, 0x20, 0x78, 0x00, 0x00, 0x00, 0x00, 0x60, 0x7c, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x7e, 0x00, 
+	0x00, 0x00, 0x01, 0xe0, 0x7f, 0x00, 0x00, 0x00, 0x07, 0xe0, 0x3f, 0x80, 0xff, 0xff, 0x0f, 0xe0, 
+	0x3f, 0xe7, 0xff, 0xff, 0xff, 0xc0, 0x1f, 0xff, 0x00, 0x01, 0xff, 0xc0, 0x1f, 0xf8, 0x00, 0x00, 
+	0x7f, 0x80, 0x1f, 0xc0, 0x00, 0x00, 0x1f, 0x80, 0x1e, 0x00, 0x00, 0x00, 0x07, 0x80, 0x38, 0x00, 
+	0x00, 0x00, 0x03, 0x80, 0x70, 0x00, 0x00, 0x00, 0x01, 0x80, 0xe0, 0x00, 0x00, 0x00, 0x00, 0xc0, 
+	0xc0, 0x00, 0x00, 0x00, 0x00, 0xc0
+};
+const unsigned char fireball_Bar [] PROGMEM = {
+	// 56x3px
+	0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x7f, 0xff, 
+	0xff, 0xff, 0xff, 0xff, 0xfe
+};
+const unsigned char toilet [] PROGMEM = {
+	// 24x24px
+	0x3e, 0x00, 0x00, 0x43, 0x00, 0x00, 0x4f, 0x80, 0x00, 0x4f, 0x00, 0x00, 0x41, 0x00, 0x00, 0x41, 
+	0x00, 0x00, 0x41, 0x00, 0x00, 0x41, 0x00, 0x00, 0x41, 0x00, 0x00, 0x41, 0x00, 0x00, 0x41, 0x00, 
+	0x00, 0x41, 0xff, 0xfc, 0x3f, 0xff, 0xfe, 0x08, 0x00, 0x0c, 0x04, 0x00, 0x08, 0x02, 0x00, 0x38, 
+	0x01, 0x00, 0x70, 0x01, 0x00, 0x40, 0x01, 0x00, 0x80, 0x01, 0x00, 0x80, 0x01, 0x00, 0x40, 0x01, 
+	0x00, 0x40, 0x02, 0x00, 0x20, 0x03, 0xff, 0xe0
+};
 
 const int leftBtn = 4;
 const int rightBtn = 5;
@@ -320,7 +337,9 @@ String options[optionsLength] = {"feed", "poo", "play", "doctor", "sleep", "stat
 int currentOption = 5;
 
 bool atHome = true;
+bool pooping = false;
 bool asleep = false;
+bool playingGame = false;
 
 const int foodOptionsLegnth = 4;
 String foodOptions[foodOptionsLegnth] = {"pear", "cookie", "pizza", "steak"};
@@ -329,6 +348,11 @@ int currentFoodOption = 0;
 const int healthOptionsLegnth = 2;
 String healthOptions[healthOptionsLegnth] = {"vitamins", "syringe"};
 int currentHealthOption = 0;
+
+const int gameOptionsLength = 3;
+String gameOptions[gameOptionsLength] = {"fire ball", "game 2", "game 3"};
+int currentGameOption = 0;
+
 
 int leftButtonState = 0;
 int rightButtonState = 0;
@@ -345,18 +369,18 @@ int poopTotal = 0;
 int poopPosition[6];
 
 const int flyPositions1[][2] = {
-  {4, 22},
-  {8, 23},
-  {13, 24},
+  {4, 24},
   {8, 25},
-  {6, 23}
+  {13, 26},
+  {8, 27},
+  {6, 25}
 };
 const int flyPositions2[][2] = {
-  {39, 24},
-  {34, 25},
-  {32, 23},
-  {30, 22},
-  {34, 23}
+  {39, 30},
+  {34, 31},
+  {32, 29},
+  {30, 28},
+  {34, 29}
 };
 
 void setup() {
@@ -481,13 +505,20 @@ void loop() {
     feed();
     delay(systemDelay);
   }
-
   if (leftButtonState == LOW && options[currentOption] == "doctor" && atHome == false) {
     currentHealthOption--;
     if (currentHealthOption < 0) {
       currentHealthOption = healthOptionsLegnth - 1;
     }
     doctor();
+    delay(systemDelay);
+  }
+  if (leftButtonState == LOW && options[currentOption] == "play" && atHome == false) {
+    currentGameOption--;
+    if (currentGameOption < 0) {
+      currentGameOption = gameOptionsLength - 1;
+    }
+    play();
     delay(systemDelay);
   }
 
@@ -515,6 +546,14 @@ void loop() {
       currentHealthOption = 0;
     }
     doctor();
+    delay(systemDelay);
+  }
+  if (rightButtonState == LOW && options[currentOption] == "play" && atHome == false) {
+    currentGameOption++;
+    if (currentGameOption > gameOptionsLength - 1) {
+      currentGameOption = 0;
+    }
+    play();
     delay(systemDelay);
   }
 
@@ -570,6 +609,11 @@ void loop() {
     delay(systemDelay);
   }
 
+  if (selectButtonState == LOW && atHome == false && gameOptions[currentGameOption] == "fire ball" && options[currentOption] == "play") {
+    playingGame = true;
+    delay(systemDelay);
+    renderFireball();
+  }
 
   if (digitalRead(selectBtn) == LOW && asleep == true && atHome == false) {
     asleep = false;
@@ -589,7 +633,6 @@ void loop() {
         poopTotal--;
         renderHome();
       } else {
-        atHome = false;
         poo();
       }
     }
@@ -640,12 +683,9 @@ void loop() {
   if (options[currentOption] == "sleep" && atHome == false) {
     sleep();
   }
-  if (options[currentOption] == "play" && atHome == false) {
+  if (options[currentOption] == "play" && atHome == false && playingGame == false) {
     play();
   }
-
-  Serial.print("left btn state: ");
-  Serial.println(leftButtonState);
 
 }
 
@@ -715,15 +755,9 @@ void feed() {
 }
 
 void poo() {
-  display.clearDisplay();
-  display.display();
   pooLvl = 0;
-  // lower poo variable
-  // animation of water washing over screen
-  // remove poo from home screen if present
-  // return home
-  delay(1000);
-  atHome = true;
+  delay(systemDelay);
+  pooping = true;
   renderHome();
 }
 
@@ -742,18 +776,26 @@ void play() {
 
   renderStatBar(5, 22, happinessLvl);
 
-  if (healthOptions[currentHealthOption] == "vitamins") {
+  if (gameOptions[currentGameOption] == "fire ball") {
     display.drawBitmap(16, 47,  vitamins_icon, 32, 32, 1);
     display.setCursor(8 , 94);
-    display.print("vitamins");
+    display.print("fire ball");
     display.setCursor(24 , 108);
-    display.print("+1");
+    display.print("+3");
   }
 
-  if (healthOptions[currentHealthOption] == "syringe") {
+  if (gameOptions[currentGameOption] == "game 2") {
     display.drawBitmap(16, 47,  syringe_icon, 32, 32, 1);
     display.setCursor(11 , 94);
-    display.print("syringe");
+    display.print("game 2");
+    display.setCursor(24 , 108);
+    display.print("+2");
+  }
+
+  if (gameOptions[currentGameOption] == "game 3") {
+    display.drawBitmap(16, 47, vitamins_icon, 32, 32, 1);
+    display.setCursor(11 , 94);
+    display.print("game 3");
     display.setCursor(24 , 108);
     display.print("+2");
   }
@@ -850,16 +892,16 @@ void setTime() {
 void renderHome() {
   display.clearDisplay();
 
-  if(currentFrame == 0){
+  if(currentFrame == 0 && pooping == false){
     display.drawBitmap(16, 48,  devil_bounce_0, 32, 32, 1);
   }
-  if(currentFrame == 1){
+  if(currentFrame == 1 && pooping == false){
     display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
   }
-  if(currentFrame == 2){
+  if(currentFrame == 2 && pooping == false){
     display.drawBitmap(16, 48,  devil_bounce_2, 32, 32, 1);
   }
-  if(currentFrame == 3){
+  if(currentFrame == 3 && pooping == false){
     display.drawBitmap(16, 48,  devil_bounce_1, 32, 32, 1);
   }
 
@@ -906,6 +948,26 @@ void renderHome() {
     display.drawBitmap(flyPositions2[currentFlyFrame][0], flyPositions2[currentFlyFrame][1], fly, 6, 5, 1);
   }
 
+  if (pooping == true) {
+    display.drawBitmap(8, 52,  toilet, 24, 24, 1);
+    display.display();
+    delay(2000);
+    pooping = false;
+  }
+
+  display.display();
+}
+
+void renderFireball() {
+  display.clearDisplay();
+
+  display.drawBitmap(3, 12,  fireball_Bar, 56, 3, 1);
+
+  // display.drawRect(4, 12, 54, 1, SH110X_WHITE);
+  // display.drawRect(3, 13, 56, 1, SH110X_WHITE);
+  // display.drawRect(4, 14, 54, 1, SH110X_WHITE);
+
+  display.drawBitmap(10, 108,  devil_head, 48, 17, 1);
   display.display();
 }
 
