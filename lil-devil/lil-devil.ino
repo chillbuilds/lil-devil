@@ -455,7 +455,9 @@ void loop() {
   if (systemDelayMillis - previousSystemDelayMillis >= systemDelayInterval) {
     previousSystemDelayMillis = systemDelayMillis;  // Reset the timer
 
-    buttonCooldown = false;
+    if (!cleaningPoo) {
+      buttonCooldown = false;  
+    }
   }
 
   if (hungerMillis - previousHungerLvlMillis >= hungerLvlInterval) {
@@ -501,10 +503,13 @@ void loop() {
 
     currentFlyFrame = (currentFlyFrame + 1) % 5;  // increment and loop to 0
 
-    currentCleanFrame++;
-    if (currentCleanFrame >= 8) {
-      currentCleanFrame = 0;
-      cleaningPoo = false;
+    if(cleaningPoo == true){
+      currentCleanFrame++;
+      if (currentCleanFrame >= 8) {
+        currentCleanFrame = 0;
+        cleaningPoo = false;
+        buttonCooldown = false;
+      }
     }
   }
 
@@ -924,17 +929,12 @@ void setTime() {
 void renderHome() {
   display.clearDisplay();
 
-  if (currentFrame == 0 && pooping == false) {
-    display.drawBitmap(16, 48, devil_bounce_0, 32, 32, 1);
-  }
-  if (currentFrame == 1 && pooping == false) {
-    display.drawBitmap(16, 48, devil_bounce_1, 32, 32, 1);
-  }
-  if (currentFrame == 2 && pooping == false) {
-    display.drawBitmap(16, 48, devil_bounce_2, 32, 32, 1);
-  }
-  if (currentFrame == 3 && pooping == false) {
-    display.drawBitmap(16, 48, devil_bounce_1, 32, 32, 1);
+  if (!pooping) {
+    const unsigned char* devil_bounce_frames[] = { devil_bounce_0, devil_bounce_1, devil_bounce_2, devil_bounce_1 };
+
+    if (currentFrame >= 0 && currentFrame < 4) {
+        display.drawBitmap(16, 48, devil_bounce_frames[currentFrame], 32, 32, 1);
+    }
   }
 
   // display.drawBitmap(14 , 48,  devil, 32, 32, 1);
@@ -1000,6 +1000,7 @@ void renderHome() {
   }
 
   if (cleaningPoo) {
+    buttonCooldown = true;
     const unsigned char* clean_frames[] = { flush_0, flush_1, flush_2, flush_3, flush_0, flush_1, flush_2, flush_3 };
     const int y_offsets[] = { 3, 4, 5 };
 
