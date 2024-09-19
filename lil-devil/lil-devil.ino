@@ -311,6 +311,26 @@ const unsigned char toilet[] PROGMEM = {
   0x01, 0x00, 0x70, 0x01, 0x00, 0x40, 0x01, 0x00, 0x80, 0x01, 0x00, 0x80, 0x01, 0x00, 0x40, 0x01,
   0x00, 0x40, 0x02, 0x00, 0x20, 0x03, 0xff, 0xe0
 };
+const unsigned char flush_0 [] PROGMEM = {
+	// 16x16px
+	0x18, 0xf0, 0x67, 0x2c, 0x40, 0x02, 0x55, 0x52, 0x5d, 0x92, 0x51, 0x42, 0x40, 0x02, 0x41, 0x0a, 
+	0x49, 0x52, 0x54, 0x92, 0x44, 0x06, 0x40, 0x06, 0x72, 0xda, 0xaf, 0xa7, 0x41, 0x19, 0x3c, 0xeb
+};
+const unsigned char flush_1 [] PROGMEM = {
+	// 16x16px
+	0x03, 0x8c, 0x7c, 0x76, 0x49, 0x92, 0x49, 0x22, 0x40, 0x02, 0x55, 0x52, 0x5d, 0x92, 0x51, 0x42, 
+	0x40, 0x02, 0x41, 0x0a, 0x51, 0x52, 0x48, 0x92, 0x77, 0x56, 0x80, 0x29, 0xcb, 0x63, 0x7a, 0x9e
+};
+const unsigned char flush_2 [] PROGMEM = {
+	// 16x16px
+	0x03, 0x1c, 0x3c, 0xea, 0x40, 0x02, 0x45, 0x52, 0x49, 0x92, 0x49, 0x22, 0x40, 0x02, 0x55, 0x52, 
+	0x5d, 0x92, 0x51, 0x42, 0x40, 0x02, 0x59, 0x8e, 0x66, 0x53, 0x82, 0x61, 0x62, 0x15, 0x3d, 0xdb
+};
+const unsigned char flush_3 [] PROGMEM = {
+	// 16x16px
+	0x18, 0x60, 0x27, 0x9c, 0x5d, 0x92, 0x51, 0x42, 0x40, 0x02, 0x45, 0x52, 0x49, 0x92, 0x49, 0x22, 
+	0x40, 0x02, 0x55, 0x52, 0x5d, 0x92, 0x51, 0x42, 0x77, 0xee, 0x5c, 0x3b, 0x80, 0x81, 0x6e, 0xf6
+};
 
 const int leftBtn = 4;
 const int rightBtn = 5;
@@ -323,6 +343,7 @@ const int animationDelay = 167;
 int currentFrame = 0;
 
 int currentFlyFrame = 0;
+int currentCleanFrame = 0;
 
 unsigned long previousHungerLvlMillis = 0;
 unsigned long previousPooLvlMillis = 0;
@@ -343,6 +364,7 @@ int currentOption = 5;
 
 bool atHome = true;
 bool pooping = false;
+bool cleaningPoo = false;
 bool asleep = false;
 bool playingGame = false;
 
@@ -478,6 +500,12 @@ void loop() {
     }
 
     currentFlyFrame = (currentFlyFrame + 1) % 5;  // increment and loop to 0
+
+    currentCleanFrame++;
+    if (currentCleanFrame >= 8) {
+      currentCleanFrame = 0;
+      cleaningPoo = false;
+    }
   }
 
   leftButtonState = digitalRead(leftBtn);
@@ -636,6 +664,7 @@ void loop() {
     if (selectedOption == "poo") {
       if (poopTotal > 0) {
         poopTotal--;
+        cleaningPoo = true;
         renderHome();
       } else {
         poo();
@@ -955,7 +984,7 @@ void renderHome() {
     const int x_positions[] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18 };
     const int y_positions[] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51 };
 
-    const unsigned char* hop_frames[] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_3 };
+    const unsigned char* hop_frames[] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4 };
 
     display.drawBitmap(8, 52, toilet, 24, 24, 1);
     display.drawBitmap(x_positions[i_global], y_positions[i_global], hop_frames[i_global], 12, 12, 1);
@@ -969,6 +998,16 @@ void renderHome() {
       delay(1000);
     }
   }
+
+  if (cleaningPoo) {
+    const unsigned char* clean_frames[] = { flush_0, flush_1, flush_2, flush_3, flush_0, flush_1, flush_2, flush_3 };
+    const int y_offsets[] = { 3, 4, 5 };
+
+    if (poopTotal >= 0 && poopTotal < 3) {
+        display.drawBitmap(
+            (poopPosition[poopTotal] -2), (poopPosition[y_offsets[poopTotal]]), clean_frames[currentCleanFrame], 16, 16, 1);
+    }
+}
 
   display.display();
 }
@@ -985,7 +1024,7 @@ void renderFireball() {
   display.drawBitmap(10, 108, devil_head, 48, 17, 1);
   display.display();
 }
-
+ 
 int getRandomNumber(int minVal, int maxVal) {
   return random(minVal, maxVal + 1);  // maxValue + 1 to include maxValue in the range
 }
