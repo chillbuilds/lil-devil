@@ -182,6 +182,11 @@ const unsigned char hop_4[] PROGMEM = {
   0x00, 0x00, 0x40, 0x20, 0x6f, 0x60, 0x70, 0xe0, 0x20, 0x40, 0x44, 0xa0, 0x40, 0x20, 0x40, 0x20,
   0x47, 0xa0, 0x20, 0x40, 0x30, 0xc0, 0x0f, 0x00
 };
+const unsigned char hop_5 [] PROGMEM = {
+	// 12x12px
+	0x20, 0x40, 0x36, 0xc0, 0x39, 0xc0, 0x10, 0x80, 0x25, 0x40, 0x20, 0x40, 0x20, 0x40, 0x20, 0x40, 
+	0x27, 0xc0, 0x10, 0x80, 0x19, 0x80, 0x06, 0x00
+};
 
 const unsigned char left_icon[] PROGMEM = {
   // 4x8
@@ -455,7 +460,7 @@ void loop() {
   if (systemDelayMillis - previousSystemDelayMillis >= systemDelayInterval) {
     previousSystemDelayMillis = systemDelayMillis;  // Reset the timer
 
-    if (!cleaningPoo) {
+    if (!cleaningPoo && !pooping) {
       buttonCooldown = false;  
     }
   }
@@ -980,21 +985,28 @@ void renderHome() {
     display.drawBitmap(flyPositions2[currentFlyFrame][0], flyPositions2[currentFlyFrame][1], fly, 6, 5, 1);
   }
 
-  if (pooping == true) {
-    const int x_positions[] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18 };
-    const int y_positions[] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51 };
-
-    const unsigned char* hop_frames[] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4 };
+  if (pooping == true) {      
+    buttonCooldown == true;   // 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
+    const int x_positions[] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
+    const int y_positions[] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
+                                        //    1      2      3      4      5      6      7      8      9     10     11     12     13     14     15     16     17     18     19     20     21     22     23     24
+    const unsigned char* hop_frames[] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4, hop_4, hop_4, hop_3, hop_5, hop_5, hop_5, hop_3, hop_4, hop_4, hop_4 };
 
     display.drawBitmap(8, 52, toilet, 24, 24, 1);
     display.drawBitmap(x_positions[i_global], y_positions[i_global], hop_frames[i_global], 12, 12, 1);
 
-    delay(167);
+    // delay(i_global <= 5 ? 140 : 280);
+    if (i_global <= 5 || i_global >= 16) {
+      delay(140);
+    } else {
+      delay(280);
+    }
 
     i_global++;
     if (i_global >= sizeof(hop_frames) / sizeof(hop_frames[0])) {
       i_global = 0;
       pooping = false;
+      buttonCooldown = false;
       delay(1000);
     }
   }
