@@ -1081,8 +1081,8 @@ void renderHome() {
     const unsigned char* foodBitmaps[] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
     const unsigned char* eating_frames[] = { open_mouth_0, open_mouth_0, open_mouth_0, open_mouth_1, open_mouth_2, open_mouth_3, open_mouth_3, open_mouth_3, open_mouth_2, open_mouth_0, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1 };
    //                             0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26
-    const int x_positions[] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
-    const int y_positions[] = { 34, 34, 34, 34, 28, 22, 26, 30, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34 ,34 ,34 ,34 ,34 ,34, 34 };
+    const int x_positions[] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
+    const int y_positions[] = { 44, 44, 44, 44, 38, 32, 36, 40, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44 };
 
     if (currentEatingFrame >= 0 && currentEatingFrame < 27) {
       display.drawBitmap(x_positions[currentEatingFrame], y_positions[currentEatingFrame], eating_frames[currentEatingFrame], 24, 24, 1);
@@ -1094,7 +1094,7 @@ void renderHome() {
 
       for (int i = 0; i < 4; i++) {
         if (foodOptions[currentFoodOption] == foodOptionsArray[i]) {
-          display.drawBitmap(28, 42, foodBitmaps[i], 12, 12, 1);
+          display.drawBitmap(28, 52, foodBitmaps[i], 12, 12, 1);
           break; // Exit the loop after drawing the bitmap
         }
       }
