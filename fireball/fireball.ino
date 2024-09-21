@@ -52,7 +52,7 @@ const unsigned char fireball_3 [] PROGMEM = {
 };
 
 unsigned long previousAnimationMillis = 0;
-const int animationDelay = 60;
+const int animationDelay = 80;
 int currentFrame = 0;
 
 unsigned long previousGameMillis = 0;
@@ -63,10 +63,13 @@ const int rightBtn = 5;
 const int selectBtn = 6;
 const int backBtn = 7;
 
+const int birdFrames = 8;
+
 int birdStartPos = 50;
 int birdEndPos = 50;
 
 bool gameSetup = false;
+bool rightSide = false;
 
 int currentFireFrame = 0;
 
@@ -113,9 +116,11 @@ void loop() {
     currentFrame++;
     currentFireFrame++;
 
-    if (currentFrame >= 8) {
+    if (currentFrame >= birdFrames) {
+      rightSide = !rightSide;
+
       currentFrame = 0;
-      birdStartPos = getRandomNumber(30, 90);
+      birdStartPos = birdEndPos;
       birdEndPos = getRandomNumber(30, 90);
     }
 
@@ -143,15 +148,11 @@ void renderFireball() {
     Serial.print("end position: ");
     Serial.println(birdEndPos);
 
-    // Serial.print("offset: ");
-    // Serial.println(offset);
-    // Serial.print("offset amount: ");
-    // Serial.println(offsetAmount);
     gameSetup = true;
   }
 
   int offset = birdStartPos - birdEndPos;
-  float offsetAmount = (float)offset / 8;
+  float offsetAmount = (float)offset / birdFrames;
 
   display.clearDisplay();
 
@@ -159,19 +160,17 @@ void renderFireball() {
   // display.drawRect(4, 12, 54, 1, SH110X_WHITE);
   display.drawBitmap(10, 108, devil_head, 48, 17, 1);
 
-  const unsigned char* y_positions[8] = {  };
-
   float yPos = birdStartPos + (offsetAmount * ((float)currentFrame + 1) * -1);
 
-  display.drawBitmap(((currentFrame * 9) - 6), round(yPos), bird, 16, 16, 1);
-
-
-  // display.drawBitmap(60, 30, bird, 16, 16, 1);
-  // display.drawBitmap(60, 80, bird, 16, 16, 1);
+  if(rightSide){
+    display.drawBitmap((58 - (currentFrame * 9)), round(yPos), bird, 16, 16, 1);
+  } else {
+    display.drawBitmap(((currentFrame * 9) - 6), round(yPos), bird, 16, 16, 1);
+  }
 
   const unsigned char* fireball_frames[4] = { fireball_0, fireball_1, fireball_2, fireball_3 };
 
-  display.drawBitmap(24, 60, fireball_frames[currentFireFrame], 16, 16, 1);
+  display.drawBitmap(24, 100, fireball_frames[currentFireFrame], 16, 16, 1);
 
 
   display.display();
