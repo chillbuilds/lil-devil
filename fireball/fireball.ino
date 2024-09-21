@@ -1,0 +1,182 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
+
+#define i2c_Address 0x3c
+
+#define SCREEN_WIDTH 128  // OLED display width, in pixels
+#define SCREEN_HEIGHT 64  // OLED display height, in pixels
+#define OLED_RESET -1     //   QT-PY / XIAO
+Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+const unsigned char fireball_Bar[] PROGMEM = {
+  // 56x3px
+  0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x7f, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xfe
+};
+const unsigned char devil_head[] PROGMEM = {
+  // 48x17px
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00,
+  0x00, 0x20, 0x78, 0x00, 0x00, 0x00, 0x00, 0x60, 0x7c, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x7e, 0x00,
+  0x00, 0x00, 0x01, 0xe0, 0x7f, 0x00, 0x00, 0x00, 0x07, 0xe0, 0x3f, 0x80, 0xff, 0xff, 0x0f, 0xe0,
+  0x3f, 0xe7, 0xff, 0xff, 0xff, 0xc0, 0x1f, 0xff, 0x00, 0x01, 0xff, 0xc0, 0x1f, 0xf8, 0x00, 0x00,
+  0x7f, 0x80, 0x1f, 0xc0, 0x00, 0x00, 0x1f, 0x80, 0x1e, 0x00, 0x00, 0x00, 0x07, 0x80, 0x38, 0x00,
+  0x00, 0x00, 0x03, 0x80, 0x70, 0x00, 0x00, 0x00, 0x01, 0x80, 0xe0, 0x00, 0x00, 0x00, 0x00, 0xc0,
+  0xc0, 0x00, 0x00, 0x00, 0x00, 0xc0
+};
+const unsigned char bird [] PROGMEM = {
+	// 16x16px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x00, 0x2f, 0x00, 0x7c, 0x00, 0xfc, 0x01, 0xfc, 0x07, 0xf8, 
+	0x0f, 0xf8, 0x1f, 0xf0, 0x3f, 0xe0, 0xf1, 0x40, 0xc1, 0x60, 0x01, 0xa0, 0x00, 0x00, 0x00, 0x00
+};
+const unsigned char fireball_0 [] PROGMEM = {
+	// 16x16px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x20, 0x0c, 0x30, 0x14, 0x68, 0x24, 0x48, 
+	0x63, 0x88, 0x40, 0x08, 0x40, 0x08, 0x20, 0x08, 0x20, 0x10, 0x10, 0x10, 0x08, 0x20, 0x0f, 0xc0
+};
+const unsigned char fireball_1 [] PROGMEM = {
+	// 16x16px
+	0x00, 0x00, 0x00, 0x00, 0x0c, 0x80, 0x09, 0x80, 0x01, 0x60, 0x06, 0x10, 0x08, 0x10, 0x08, 0x10, 
+	0x10, 0x10, 0x10, 0x08, 0x10, 0x08, 0x10, 0x10, 0x10, 0x10, 0x08, 0x20, 0x0c, 0x40, 0x03, 0x80
+};
+const unsigned char fireball_2 [] PROGMEM = {
+	// 16x16px
+	0x18, 0x40, 0x08, 0xc0, 0x00, 0xa0, 0x00, 0xa0, 0x01, 0x20, 0x01, 0x20, 0x02, 0x10, 0x02, 0x10, 
+	0x02, 0x10, 0x04, 0x10, 0x04, 0x10, 0x04, 0x10, 0x02, 0x20, 0x02, 0x20, 0x01, 0x40, 0x00, 0x80
+};
+const unsigned char fireball_3 [] PROGMEM = {
+	// 16x16px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x20, 0x00, 0x50, 0x00, 0x50, 0x00, 0x50, 
+	0x02, 0x90, 0x05, 0x10, 0x08, 0x10, 0x08, 0x10, 0x08, 0x20, 0x04, 0x20, 0x03, 0x40, 0x00, 0x80
+};
+
+unsigned long previousAnimationMillis = 0;
+const int animationDelay = 60;
+int currentFrame = 0;
+
+unsigned long previousGameMillis = 0;
+int gameDelay = 0;
+
+const int leftBtn = 4;
+const int rightBtn = 5;
+const int selectBtn = 6;
+const int backBtn = 7;
+
+int birdStartPos = 50;
+int birdEndPos = 50;
+
+bool gameSetup = false;
+
+int currentFireFrame = 0;
+
+void setup() {
+
+  randomSeed(analogRead(0));
+  birdStartPos = getRandomNumber(30, 80);
+  delay(20);
+  birdEndPos = getRandomNumber(30, 80);
+
+  Serial.begin(9600);
+
+  pinMode(leftBtn, INPUT_PULLUP);
+  pinMode(rightBtn, INPUT_PULLUP);
+  pinMode(selectBtn, INPUT_PULLUP);
+  pinMode(backBtn, INPUT_PULLUP);
+
+  delay(500);                        // wait for the OLED to power up
+  display.begin(i2c_Address, true);  // Address 0x3C default
+  display.setContrast(0);            // dim display
+  display.setRotation(1);
+  display.setTextColor(SH110X_WHITE);
+  display.setTextSize(1);
+
+  display.clearDisplay();
+  display.display();
+
+  gameDelay = getRandomNumber(1000, 3000);
+
+  delay(3000);
+  
+}
+
+void loop() {
+
+  renderFireball();
+
+  unsigned long animationMillis = millis();
+  unsigned long gameMillis = millis();
+  
+  if (animationMillis - previousAnimationMillis >= animationDelay) {
+    previousAnimationMillis = animationMillis;  // Reset the timer
+
+    currentFrame++;
+    currentFireFrame++;
+
+    if (currentFrame >= 8) {
+      currentFrame = 0;
+      birdStartPos = getRandomNumber(30, 90);
+      birdEndPos = getRandomNumber(30, 90);
+    }
+
+    if (currentFireFrame > 3) {
+      currentFireFrame = 0;
+    }
+    
+  }
+
+  if (gameMillis - previousGameMillis >= gameDelay) {
+    previousGameMillis = gameMillis;  // Reset the timer
+  
+    gameDelay = getRandomNumber(1000, 3000);
+
+  }
+}
+
+void renderFireball() {
+
+  if(gameSetup == false){
+    birdStartPos = getRandomNumber(30, 90);
+    birdEndPos = getRandomNumber(30, 90);
+    Serial.print("start position: ");
+    Serial.println(birdStartPos);
+    Serial.print("end position: ");
+    Serial.println(birdEndPos);
+
+    // Serial.print("offset: ");
+    // Serial.println(offset);
+    // Serial.print("offset amount: ");
+    // Serial.println(offsetAmount);
+    gameSetup = true;
+  }
+
+  int offset = birdStartPos - birdEndPos;
+  float offsetAmount = (float)offset / 8;
+
+  display.clearDisplay();
+
+  display.drawBitmap(3, 12, fireball_Bar, 56, 3, 1);
+  // display.drawRect(4, 12, 54, 1, SH110X_WHITE);
+  display.drawBitmap(10, 108, devil_head, 48, 17, 1);
+
+  const unsigned char* y_positions[8] = {  };
+
+  float yPos = birdStartPos + (offsetAmount * ((float)currentFrame + 1) * -1);
+
+  display.drawBitmap(((currentFrame * 9) - 6), round(yPos), bird, 16, 16, 1);
+
+
+  // display.drawBitmap(60, 30, bird, 16, 16, 1);
+  // display.drawBitmap(60, 80, bird, 16, 16, 1);
+
+  const unsigned char* fireball_frames[4] = { fireball_0, fireball_1, fireball_2, fireball_3 };
+
+  display.drawBitmap(24, 60, fireball_frames[currentFireFrame], 16, 16, 1);
+
+
+  display.display();
+}
+
+int getRandomNumber(int minVal, int maxVal) {
+  return random(minVal, maxVal + 1);  // maxValue + 1 to include maxValue in the range
+}

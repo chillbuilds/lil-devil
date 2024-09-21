@@ -423,9 +423,9 @@ unsigned long previousAnimationMillis = 0;
 const int animationDelay = 167;
 int currentFrame = 0;
 
-int currentEatingFrame = 0;
+int currentClnFrame = 0;
+int currentEatFrame = 0;
 int currentFlyFrame = 0;
-int currentCleanFrame = 0;
 
 unsigned long previousHungerLvlMillis = 0;
 unsigned long previousPooLvlMillis = 0;
@@ -433,16 +433,12 @@ unsigned long previousSleepLvlMillis = 0;
 
 unsigned long previousSystemDelayMillis = 0;
 int systemDelayInterval = 300;
-bool buttonCooldown = false;
+bool btnCooldown = false;
 
 unsigned long hungerLvlInterval = 10000UL;
 unsigned long pooLvlInterval = 2000UL;
 unsigned long happinessLvlInterval = 3000UL;
 unsigned long sleepLvlInterval = 10000UL;
-
-const int optionsLength = 7;
-String options[optionsLength] = { "feed", "poo", "play", "doctor", "sleep", "stats", "time" };
-int currentOption = 5;
 
 bool atHome = true;
 bool eating = false;
@@ -453,23 +449,21 @@ bool playingGame = false;
 
 int i_global = 0;
 
+const int optionsLength = 7;
+const char* options[] = { "feed", "poo", "play", "doctor", "sleep", "stats", "time" };
+int currentOption = 0;
+
 const int foodOptionsLegnth = 4;
-String foodOptions[foodOptionsLegnth] = { "pear", "cookie", "pizza", "steak" };
+const char* foodOptions[foodOptionsLegnth] = { "pear", "cookie", "pizza", "steak" };
 int currentFoodOption = 0;
 
 const int healthOptionsLegnth = 2;
-String healthOptions[healthOptionsLegnth] = { "vitamins", "syringe" };
+const char* healthOptions[healthOptionsLegnth] = { "vitamins", "syringe" };
 int currentHealthOption = 0;
 
 const int gameOptionsLength = 3;
-String gameOptions[gameOptionsLength] = { "fire ball", "game 2", "game 3" };
+const char* gameOptions[gameOptionsLength] = { "fire ball", "game 2", "game 3" };
 int currentGameOption = 0;
-
-
-int leftButtonState = 0;
-int rightButtonState = 0;
-int selectButtonState = 0;
-int backButtonState = 0;
 
 int hungerLvl = 1;
 int pooLvl = 1;
@@ -511,7 +505,7 @@ void setup() {
   pinMode(selectBtn, INPUT_PULLUP);
   pinMode(backBtn, INPUT_PULLUP);
 
-  delay(500);                        // wait for the OLED to power up
+  delay(1000);                        // wait for the OLED to power up
   display.begin(i2c_Address, true);  // Address 0x3C default
   display.setContrast(0);            // dim display
   display.setRotation(1);
@@ -522,9 +516,8 @@ void setup() {
   display.display();
 
   renderSplashScreen();
-  delay(10000);
+  delay(5000);
 
-  renderHome();
 }
 
 void loop() {
@@ -539,7 +532,7 @@ void loop() {
     previousSystemDelayMillis = systemDelayMillis;  // Reset the timer
 
     if (!cleaningPoo && !pooping && !eating) {
-      buttonCooldown = false;  
+      btnCooldown = false;  
     }
   }
 
@@ -585,32 +578,29 @@ void loop() {
     }
 
     if(eating){
-      currentEatingFrame++;
-      if (currentEatingFrame >= 26) {
-        currentEatingFrame = 0;
+      currentEatFrame++;
+      if (currentEatFrame >= 26) {
+        currentEatFrame = 0;
         eating = false;
-        buttonCooldown = false;
+        btnCooldown = false;
       }
     }
 
     currentFlyFrame = (currentFlyFrame + 1) % 5;  // increment and loop to 0
 
-    if(cleaningPoo){
-      currentCleanFrame++;
-      if (currentCleanFrame >= 8) {
-        currentCleanFrame = 0;
+    if (cleaningPoo) {
+      Serial.print("clean frame: ");
+      Serial.println(currentClnFrame);
+      currentClnFrame++;
+      if (currentClnFrame >= 8) {
+        currentClnFrame = 0;
         cleaningPoo = false;
-        buttonCooldown = false;
+        btnCooldown = false;
       }
     }
   }
 
-  leftButtonState = digitalRead(leftBtn);
-  rightButtonState = digitalRead(rightBtn);
-  selectButtonState = digitalRead(selectBtn);
-  backButtonState = digitalRead(backBtn);
-
-  if (backButtonState == LOW) {
+  if (digitalRead(backBtn) == LOW) {
     if (atHome == false) {
       atHome = true;
       renderHome();
@@ -618,8 +608,8 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (leftButtonState == LOW && atHome == true && buttonCooldown == false) {
-    buttonCooldown = true;
+  if (digitalRead(leftBtn) == LOW && atHome == true && btnCooldown == false) {
+    btnCooldown = true;
     previousSystemDelayMillis = systemDelayMillis;
     currentOption--;
     if (currentOption < 0) {
@@ -627,7 +617,7 @@ void loop() {
     }
     renderHome();
   }
-  if (leftButtonState == LOW && options[currentOption] == "feed" && atHome == false) {
+  if (digitalRead(leftBtn) == LOW && options[currentOption] == "feed" && atHome == false) {
     currentFoodOption--;
     if (currentFoodOption < 0) {
       currentFoodOption = foodOptionsLegnth - 1;
@@ -635,7 +625,7 @@ void loop() {
     feed();
     delay(systemDelay);
   }
-  if (leftButtonState == LOW && options[currentOption] == "doctor" && atHome == false) {
+  if (digitalRead(leftBtn) == LOW && options[currentOption] == "doctor" && atHome == false) {
     currentHealthOption--;
     if (currentHealthOption < 0) {
       currentHealthOption = healthOptionsLegnth - 1;
@@ -643,7 +633,7 @@ void loop() {
     doctor();
     delay(systemDelay);
   }
-  if (leftButtonState == LOW && options[currentOption] == "play" && atHome == false) {
+  if (digitalRead(leftBtn) == LOW && options[currentOption] == "play" && atHome == false) {
     currentGameOption--;
     if (currentGameOption < 0) {
       currentGameOption = gameOptionsLength - 1;
@@ -652,8 +642,8 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (rightButtonState == LOW && atHome == true && buttonCooldown == false) {
-    buttonCooldown = true;
+  if (digitalRead(rightBtn) == LOW && atHome == true && btnCooldown == false) {
+    btnCooldown = true;
     previousSystemDelayMillis = systemDelayMillis;
     currentOption++;
     if (currentOption > optionsLength - 1) {
@@ -661,7 +651,7 @@ void loop() {
     }
     renderHome();
   }
-  if (rightButtonState == LOW && options[currentOption] == "feed" && atHome == false) {
+  if (digitalRead(rightBtn) == LOW && options[currentOption] == "feed" && atHome == false) {
     currentFoodOption++;
     if (currentFoodOption > foodOptionsLegnth - 1) {
       currentFoodOption = 0;
@@ -670,7 +660,7 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (rightButtonState == LOW && options[currentOption] == "doctor" && atHome == false) {
+  if (digitalRead(rightBtn) == LOW && options[currentOption] == "doctor" && atHome == false) {
     currentHealthOption++;
     if (currentHealthOption > healthOptionsLegnth - 1) {
       currentHealthOption = 0;
@@ -678,7 +668,7 @@ void loop() {
     doctor();
     delay(systemDelay);
   }
-  if (rightButtonState == LOW && options[currentOption] == "play" && atHome == false) {
+  if (digitalRead(rightBtn) == LOW && options[currentOption] == "play" && atHome == false) {
     currentGameOption++;
     if (currentGameOption > gameOptionsLength - 1) {
       currentGameOption = 0;
@@ -687,7 +677,7 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "pear" && options[currentOption] == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "pear" && options[currentOption] == "feed") {
     hungerLvl--;
     feed();
     delay(600);
@@ -696,7 +686,7 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "cookie" && options[currentOption] == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "cookie" && options[currentOption] == "feed") {
     hungerLvl--;
     feed();
     delay(600);
@@ -705,17 +695,7 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "pizza" && options[currentOption] == "feed") {
-    hungerLvl--;
-    hungerLvl--;
-    feed();
-    delay(600);
-    atHome = true;
-    eating = true;
-    renderHome();
-    delay(systemDelay);
-  }
-  if (selectButtonState == LOW && atHome == false && foodOptions[currentFoodOption] == "steak" && options[currentOption] == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "pizza" && options[currentOption] == "feed") {
     hungerLvl--;
     hungerLvl--;
     feed();
@@ -725,7 +705,17 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && healthOptions[currentHealthOption] == "vitamins" && options[currentOption] == "doctor") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "steak" && options[currentOption] == "feed") {
+    hungerLvl--;
+    hungerLvl--;
+    feed();
+    delay(600);
+    atHome = true;
+    eating = true;
+    renderHome();
+    delay(systemDelay);
+  }
+  if (digitalRead(selectBtn) == LOW && atHome == false && healthOptions[currentHealthOption] == "vitamins" && options[currentOption] == "doctor") {
     healthLvl++;
     doctor();
     delay(600);
@@ -733,7 +723,7 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (selectButtonState == LOW && atHome == false && healthOptions[currentHealthOption] == "syringe" && options[currentOption] == "doctor") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && healthOptions[currentHealthOption] == "syringe" && options[currentOption] == "doctor") {
     healthLvl++;
     healthLvl++;
     doctor();
@@ -743,7 +733,7 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (selectButtonState == LOW && atHome == false && gameOptions[currentGameOption] == "fire ball" && options[currentOption] == "play") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && gameOptions[currentGameOption] == "fire ball" && options[currentOption] == "play") {
     playingGame = true;
     delay(systemDelay);
     renderFireball();
@@ -754,15 +744,12 @@ void loop() {
     renderHome();
   }
 
-  selectButtonState = digitalRead(selectBtn);
-
-  if (selectButtonState == LOW && atHome == true) {
-    String selectedOption = options[currentOption];
-    if (selectedOption == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == true) {
+    if (options[currentOption] == "feed") {
       atHome = false;
       feed();
     }
-    if (selectedOption == "poo") {
+    if (options[currentOption] == "poo") {
       if (poopTotal > 0) {
         poopTotal--;
         cleaningPoo = true;
@@ -771,24 +758,24 @@ void loop() {
         poo();
       }
     }
-    if (selectedOption == "play") {
+    if (options[currentOption] == "play") {
       atHome = false;
       play();
     }
-    if (selectedOption == "sleep") {
+    if (options[currentOption] == "sleep") {
       asleep = true;
       atHome = false;
       sleep();
     }
-    if (selectedOption == "doctor") {
+    if (options[currentOption] == "doctor") {
       atHome = false;
       doctor();
     }
-    if (selectedOption == "stats") {
+    if (options[currentOption] == "stats") {
       atHome = false;
       stats();
     }
-    if (selectedOption == "time") {
+    if (options[currentOption] == "time") {
       atHome = false;
       setTime();
     }
@@ -847,7 +834,6 @@ void renderStatBar(int xPos, int yPos, int needLvl) {
 
 void feed() {
   display.clearDisplay();
-
   display.setCursor(14, 8);
   display.print("hunger");
 
@@ -987,11 +973,6 @@ void sleep() {
 void stats() {
   display.clearDisplay();
 
-  // display.drawRect(5, 26, 54, 1, SH110X_WHITE);
-  // display.drawRect(5, 51, 54, 1, SH110X_WHITE);
-  // display.drawRect(5, 76, 54, 1, SH110X_WHITE);
-  // display.drawRect(5, 101, 54, 1, SH110X_WHITE);
-
   display.drawBitmap(4, 2, food_icon, 12, 12, 1);
   display.drawBitmap(4, 27, poo_icon, 12, 12, 1);
   display.drawBitmap(4, 52, play_icon, 12, 12, 1);
@@ -1033,7 +1014,6 @@ void renderHome() {
     }
   }
 
-  // display.drawBitmap(14 , 48,  devil, 32, 32, 1);
   display.drawBitmap(2, 4, food_icon, 12, 12, 1);
   display.drawBitmap(18, 4, poo_icon, 12, 12, 1);
   display.drawBitmap(34, 4, play_icon, 12, 12, 1);
@@ -1077,20 +1057,20 @@ void renderHome() {
   }
 
   if (eating) {
-    buttonCooldown = true;
-    const unsigned char* foodBitmaps[] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
-    const unsigned char* eating_frames[] = { open_mouth_0, open_mouth_0, open_mouth_0, open_mouth_1, open_mouth_2, open_mouth_3, open_mouth_3, open_mouth_3, open_mouth_2, open_mouth_0, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1 };
+    btnCooldown = true;
+    const unsigned char* foodBitmaps[4] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
+    const unsigned char* eating_frames[26] = { open_mouth_0, open_mouth_0, open_mouth_0, open_mouth_1, open_mouth_2, open_mouth_3, open_mouth_3, open_mouth_3, open_mouth_2, open_mouth_0, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1 };
    //                             0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26
-    const int x_positions[] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
-    const int y_positions[] = { 44, 44, 44, 44, 38, 32, 36, 40, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44 };
+    const unsigned char* x_positions[26] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
+    const unsigned char* y_positions[26] = { 44, 44, 44, 44, 38, 32, 36, 40, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44 };
 
-    if (currentEatingFrame >= 0 && currentEatingFrame < 27) {
-      display.drawBitmap(x_positions[currentEatingFrame], y_positions[currentEatingFrame], eating_frames[currentEatingFrame], 24, 24, 1);
+    if (currentEatFrame >= 0 && currentEatFrame < 27) {
+      display.drawBitmap(x_positions[currentEatFrame], y_positions[currentEatFrame], eating_frames[currentEatFrame], 24, 24, 1);
     }
 
-    if (currentEatingFrame <= 7) {
-      const char* foodOptionsArray[] = { "pear", "cookie", "pizza", "steak" };
-      const unsigned char* foodBitmaps[] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
+    if (currentEatFrame <= 7) {
+      const char* foodOptionsArray[4] = { "pear", "cookie", "pizza", "steak" };
+      const unsigned char* foodBitmaps[4] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
 
       for (int i = 0; i < 4; i++) {
         if (foodOptions[currentFoodOption] == foodOptionsArray[i]) {
@@ -1102,43 +1082,42 @@ void renderHome() {
 
   }
 
-  // if (pooping) {      
-  //   buttonCooldown == true;   // 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
-  //   const int x_positions[] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
-  //   const int y_positions[] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
-  //                                       //    1      2      3      4      5      6      7      8      9     10     11     12     13     14     15     16     17     18     19     20     21     22     23     24
-  //   const unsigned char* hop_frames[] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4, hop_4, hop_4, hop_3, hop_5, hop_5, hop_5, hop_3, hop_4, hop_4, hop_4 };
+  if (pooping) {      
+    
+    btnCooldown == true;   // 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
+    const unsigned char* x_positions[24] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
+    const unsigned char* y_positions[24] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
+                                        //    1      2      3      4      5      6      7      8      9     10     11     12     13     14     15     16     17     18     19     20     21     22     23     24
+    const unsigned char* hop_frames[24] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4, hop_4, hop_4, hop_3, hop_5, hop_5, hop_5, hop_3, hop_4, hop_4, hop_4 };
 
-  //   display.drawBitmap(8, 52, toilet, 24, 24, 1);
-  //   display.drawBitmap(x_positions[i_global], y_positions[i_global], hop_frames[i_global], 12, 12, 1);
+    display.drawBitmap(8, 52, toilet, 24, 24, 1);
+    display.drawBitmap(x_positions[i_global], y_positions[i_global], hop_frames[i_global], 12, 12, 1);
 
-  //   // delay(i_global <= 5 ? 140 : 280);
-  //   if (i_global <= 5 || i_global >= 16) {
-  //     delay(140);
-  //   } else {
-  //     delay(280);
-  //   }
+    // delay(i_global <= 5 ? 140 : 280);
+    if (i_global <= 5 || i_global >= 16) {
+      delay(140);
+    } else {
+      delay(280);
+    }
 
-  //   i_global++;
-  //   if (i_global >= sizeof(hop_frames) / sizeof(hop_frames[0])) {
-  //     i_global = 0;
-  //     pooping = false;
-  //     buttonCooldown = false;
-  //     delay(1000);
-  //   }
-  // }
-
-  if (cleaningPoo) {
-    buttonCooldown = true;
-    const unsigned char* clean_frames[] = { flush_0, flush_1, flush_2, flush_3, flush_0, flush_1, flush_2, flush_3 };
-    const int y_offsets[] = { 3, 4, 5 };
-
-    if (poopTotal >= 0 && poopTotal < 3) {
-        display.drawBitmap(
-            (poopPosition[poopTotal] -2), (poopPosition[y_offsets[poopTotal]]), clean_frames[currentCleanFrame], 16, 16, 1);
+    i_global++;
+    if (i_global >= sizeof(hop_frames) / sizeof(hop_frames[0])) {
+      i_global = 0;
+      pooping = false;
+      btnCooldown = false;
+      delay(1000);
     }
   }
 
+  if (cleaningPoo) {
+    btnCooldown = true;
+    const unsigned char* clean_frames[8] = { flush_0, flush_1, flush_2, flush_3, flush_0, flush_1, flush_2, flush_3 };
+    const int y_offsets[3] = { 3, 4, 5 };
+
+    if (poopTotal >= 0 && poopTotal < 3) {
+        display.drawBitmap((poopPosition[poopTotal] -2), (poopPosition[y_offsets[poopTotal]]), clean_frames[currentClnFrame], 16, 16, 1);
+    }
+  }
   display.display();
 }
 
@@ -1148,8 +1127,6 @@ void renderFireball() {
   display.drawBitmap(3, 12, fireball_Bar, 56, 3, 1);
 
   // display.drawRect(4, 12, 54, 1, SH110X_WHITE);
-  // display.drawRect(3, 13, 56, 1, SH110X_WHITE);
-  // display.drawRect(4, 14, 54, 1, SH110X_WHITE);
 
   display.drawBitmap(10, 108, devil_head, 48, 17, 1);
   display.display();
