@@ -55,7 +55,7 @@ const unsigned char fireball_3 [] PROGMEM = {
 };
 
 unsigned long previousAnimationMillis = 0;
-const int animationDelay = 20;
+const int animationDelay = 16;
 int currentFrame = 0;
 
 unsigned long previousGameMillis = 0;
@@ -66,7 +66,7 @@ const int rightBtn = 5;
 const int selectBtn = 6;
 const int backBtn = 7;
 
-const int birdFrames = 16;
+const int birdFrames = 48;
 
 int birdStartPos = 50;
 int birdEndPos = 50;
@@ -118,7 +118,9 @@ void loop() {
 
     currentFrame++;
     currentFireFrame++;
-    if (currentFrame >= birdFrames) {      rightSide = !rightSide;
+    if (currentFrame >= birdFrames) {      
+
+      rightSide = !rightSide;
 
       currentFrame = 0;
       birdStartPos = birdEndPos;
@@ -158,28 +160,35 @@ void renderFireball() {
   display.clearDisplay();
 
   display.drawBitmap(3, 10, fireball_Bar, 56, 11, 1);
-
-  display.drawRect((currentFrame * 3) + 8, 10, 2, 11, SH110X_WHITE);
-
   display.drawBitmap(10, 108, devil_head, 48, 17, 1);
 
   float yPos = birdStartPos + (offsetAmount * ((float)currentFrame + 1) * -1);
 
-  Serial.print("y pos: ");
-  Serial.println(round(yPos));
-
   const unsigned char* fireball_frames[4] = { fireball_0, fireball_1, fireball_2, fireball_3 };
 
-  if(rightSide){
-    display.drawBitmap((48 - (currentFrame * 4)), round(yPos), bird, 16, 16, 1);
+  if (currentFrame < birdFrames/2) {
+    display.drawRect(((currentFrame * 2.16) + 4), 10, 2, 11, SH110X_WHITE);
+  }else{
+    display.drawRect(((opposite(currentFrame) * 2.16) + 4), 10, 2, 11, SH110X_WHITE);
+  }
+
+  if (rightSide) {
+    display.drawBitmap((48 - currentFrame), round(yPos), bird, 16, 16, 1);
   } else {
-    display.drawBitmap(((currentFrame * 4) - 6), round(yPos), bird, 16, 16, 1);
+    display.drawBitmap(currentFrame, round(yPos), bird, 16, 16, 1);
   }
 
   // display.drawBitmap(24, 100, fireball_frames[currentFireFrame], 16, 16, 1);
 
 
   display.display();
+}
+
+int opposite(int x) {
+  if (x < 0 || x > 47) {
+    return -1; // Return -1 for out of range
+  }
+  return 47 - x;
 }
 
 int getRandomNumber(int minVal, int maxVal) {
