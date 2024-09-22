@@ -413,10 +413,10 @@ const unsigned char flush_3 [] PROGMEM = {
 	0x40, 0x02, 0x54, 0x0a, 0x55, 0x52, 0x51, 0x52, 0x77, 0xee, 0x5c, 0x3b, 0x80, 0x81, 0x6e, 0xf6
 };
 
-const int leftBtn = 4;
-const int rightBtn = 5;
-const int selectBtn = 6;
-const int backBtn = 7;
+const int leftBtn = 0;
+const int backBtn = 1;
+const int selectBtn = 2;
+const int rightBtn = 3;
 const int systemDelay = 150;
 
 unsigned long previousAnimationMillis = 0;
@@ -436,8 +436,8 @@ int systemDelayInterval = 300;
 bool btnCooldown = false;
 
 unsigned long hungerLvlInterval = 10000UL;
-unsigned long pooLvlInterval = 2000UL;
-unsigned long happinessLvlInterval = 3000UL;
+unsigned long pooLvlInterval = 4000UL;
+unsigned long happinessLvlInterval = 10000UL;
 unsigned long sleepLvlInterval = 10000UL;
 
 bool atHome = true;
@@ -1061,11 +1061,11 @@ void renderHome() {
     const unsigned char* foodBitmaps[4] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
     const unsigned char* eating_frames[26] = { open_mouth_0, open_mouth_0, open_mouth_0, open_mouth_1, open_mouth_2, open_mouth_3, open_mouth_3, open_mouth_3, open_mouth_2, open_mouth_0, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1 };
    //                             0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26
-    const unsigned char* x_positions[26] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
-    const unsigned char* y_positions[26] = { 44, 44, 44, 44, 38, 32, 36, 40, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44 };
+    int x_positions[26] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
+    int y_positions[26] = { 44, 44, 44, 44, 38, 32, 36, 40, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44 };
 
     if (currentEatFrame >= 0 && currentEatFrame < 27) {
-      display.drawBitmap(x_positions[currentEatFrame], y_positions[currentEatFrame], eating_frames[currentEatFrame], 24, 24, 1);
+      display.drawBitmap(x_positions[currentEatFrame], (y_positions[currentEatFrame] + 12), eating_frames[currentEatFrame], 24, 24, 1);
     }
 
     if (currentEatFrame <= 7) {
@@ -1074,7 +1074,7 @@ void renderHome() {
 
       for (int i = 0; i < 4; i++) {
         if (foodOptions[currentFoodOption] == foodOptionsArray[i]) {
-          display.drawBitmap(28, 52, foodBitmaps[i], 12, 12, 1);
+          display.drawBitmap(28, 64, foodBitmaps[i], 12, 12, 1);
           break; // Exit the loop after drawing the bitmap
         }
       }
@@ -1085,8 +1085,8 @@ void renderHome() {
   if (pooping) {      
     
     btnCooldown == true;   // 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
-    const unsigned char* x_positions[24] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
-    const unsigned char* y_positions[24] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
+    int x_positions[24] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
+    int y_positions[24] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
                                         //    1      2      3      4      5      6      7      8      9     10     11     12     13     14     15     16     17     18     19     20     21     22     23     24
     const unsigned char* hop_frames[24] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4, hop_4, hop_4, hop_3, hop_5, hop_5, hop_5, hop_3, hop_4, hop_4, hop_4 };
 
