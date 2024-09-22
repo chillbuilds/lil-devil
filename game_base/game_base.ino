@@ -10,10 +10,10 @@
 #define OLED_RESET -1     //   QT-PY / XIAO
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-const int leftBtn = 4;
-const int rightBtn = 5;
-const int selectBtn = 6;
-const int backBtn = 7;
+const int leftBtn = 0;
+const int backBtn = 1;
+const int selectBtn = 2;
+const int rightBtn = 3;
 
 unsigned long previousAnimationMillis = 0;
 const int animationDelay = 85;
