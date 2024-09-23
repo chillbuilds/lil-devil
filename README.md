@@ -10,5 +10,3 @@ death animation
 
 descent animation
 
-add pinout to readme
-
