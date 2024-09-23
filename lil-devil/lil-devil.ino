@@ -644,8 +644,6 @@ void loop() {
     currentFlyFrame = (currentFlyFrame + 1) % 5;  // increment and loop to 0
 
     if (cleaningPoo) {
-      Serial.print("clean frame: ");
-      Serial.println(currentClnFrame);
       currentClnFrame++;
       if (currentClnFrame >= 8) {
         currentClnFrame = 0;
@@ -655,7 +653,7 @@ void loop() {
     }
   }
 
-  if (digitalRead(backBtn) == LOW) {
+  if (digitalRead(backBtn) == LOW && btnCooldown == false) {
     if (atHome == false) {
       atHome = true;
       renderHome();
@@ -672,7 +670,7 @@ void loop() {
     }
     renderHome();
   }
-  if (digitalRead(leftBtn) == LOW && options[currentOption] == "feed" && atHome == false) {
+  if (digitalRead(leftBtn) == LOW && options[currentOption] == "feed" && atHome == false && btnCooldown == false) {
     currentFoodOption--;
     if (currentFoodOption < 0) {
       currentFoodOption = foodOptionsLegnth - 1;
@@ -680,7 +678,7 @@ void loop() {
     feed();
     delay(systemDelay);
   }
-  if (digitalRead(leftBtn) == LOW && options[currentOption] == "doctor" && atHome == false) {
+  if (digitalRead(leftBtn) == LOW && options[currentOption] == "doctor" && atHome == false && btnCooldown == false) {
     currentHealthOption--;
     if (currentHealthOption < 0) {
       currentHealthOption = healthOptionsLegnth - 1;
@@ -688,7 +686,7 @@ void loop() {
     doctor();
     delay(systemDelay);
   }
-  if (digitalRead(leftBtn) == LOW && options[currentOption] == "play" && atHome == false) {
+  if (digitalRead(leftBtn) == LOW && options[currentOption] == "play" && atHome == false && btnCooldown == false) {
     currentGameOption--;
     if (currentGameOption < 0) {
       currentGameOption = gameOptionsLength - 1;
@@ -706,7 +704,7 @@ void loop() {
     }
     renderHome();
   }
-  if (digitalRead(rightBtn) == LOW && options[currentOption] == "feed" && atHome == false) {
+  if (digitalRead(rightBtn) == LOW && options[currentOption] == "feed" && atHome == false && btnCooldown == false) {
     currentFoodOption++;
     if (currentFoodOption > foodOptionsLegnth - 1) {
       currentFoodOption = 0;
@@ -715,7 +713,7 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (digitalRead(rightBtn) == LOW && options[currentOption] == "doctor" && atHome == false) {
+  if (digitalRead(rightBtn) == LOW && options[currentOption] == "doctor" && atHome == false && btnCooldown == false) {
     currentHealthOption++;
     if (currentHealthOption > healthOptionsLegnth - 1) {
       currentHealthOption = 0;
@@ -723,7 +721,7 @@ void loop() {
     doctor();
     delay(systemDelay);
   }
-  if (digitalRead(rightBtn) == LOW && options[currentOption] == "play" && atHome == false) {
+  if (digitalRead(rightBtn) == LOW && options[currentOption] == "play" && atHome == false && btnCooldown == false) {
     currentGameOption++;
     if (currentGameOption > gameOptionsLength - 1) {
       currentGameOption = 0;
@@ -732,7 +730,8 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "pear" && options[currentOption] == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "pear" && options[currentOption] == "feed" && btnCooldown == false) {
+    btnCooldown = true;
     hungerLvl--;
     feed();
     delay(600);
@@ -741,7 +740,8 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "cookie" && options[currentOption] == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "cookie" && options[currentOption] == "feed" && btnCooldown == false) {
+    btnCooldown = true;
     hungerLvl--;
     feed();
     delay(600);
@@ -750,17 +750,8 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "pizza" && options[currentOption] == "feed") {
-    hungerLvl--;
-    hungerLvl--;
-    feed();
-    delay(600);
-    atHome = true;
-    eating = true;
-    renderHome();
-    delay(systemDelay);
-  }
-  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "steak" && options[currentOption] == "feed") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "pizza" && options[currentOption] == "feed" && btnCooldown == false) {
+    btnCooldown = true;
     hungerLvl--;
     hungerLvl--;
     feed();
@@ -770,7 +761,19 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (digitalRead(selectBtn) == LOW && atHome == false && healthOptions[currentHealthOption] == "vitamins" && options[currentOption] == "doctor") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && foodOptions[currentFoodOption] == "steak" && options[currentOption] == "feed" && btnCooldown == false) {
+    btnCooldown = true;
+    hungerLvl--;
+    hungerLvl--;
+    feed();
+    delay(600);
+    atHome = true;
+    eating = true;
+    renderHome();
+    delay(systemDelay);
+  }
+  if (digitalRead(selectBtn) == LOW && atHome == false && healthOptions[currentHealthOption] == "vitamins" && options[currentOption] == "doctor" && btnCooldown == false) {
+    btnCooldown = true;
     healthLvl++;
     doctor();
     delay(600);
@@ -778,7 +781,8 @@ void loop() {
     renderHome();
     delay(systemDelay);
   }
-  if (digitalRead(selectBtn) == LOW && atHome == false && healthOptions[currentHealthOption] == "syringe" && options[currentOption] == "doctor") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && healthOptions[currentHealthOption] == "syringe" && options[currentOption] == "doctor" && btnCooldown == false) {
+    btnCooldown = true;
     healthLvl++;
     healthLvl++;
     doctor();
@@ -788,18 +792,18 @@ void loop() {
     delay(systemDelay);
   }
 
-  if (digitalRead(selectBtn) == LOW && atHome == false && gameOptions[currentGameOption] == "fire ball" && options[currentOption] == "play") {
+  if (digitalRead(selectBtn) == LOW && atHome == false && gameOptions[currentGameOption] == "fire ball" && options[currentOption] == "play" && btnCooldown == false) {
     playingGame = true;
     delay(systemDelay);
     renderFireball();
   }
 
-  if (digitalRead(selectBtn) == LOW && asleep == true && atHome == false) {
+  if (digitalRead(selectBtn) == LOW && asleep == true && atHome == false && btnCooldown == false) {
     asleep = false;
     renderHome();
   }
 
-  if (digitalRead(selectBtn) == LOW && atHome == true) {
+  if (digitalRead(selectBtn) == LOW && atHome == true && btnCooldown == false) {
     if (options[currentOption] == "feed") {
       atHome = false;
       feed();
