@@ -480,6 +480,7 @@ int currentFrame = 0;
 
 int currentClnFrame = 0;
 int currentEatFrame = 0;
+int currentPoopFrame = 0;
 int currentFlyFrame = 0;
 
 unsigned long previousHungerLvlMillis = 0;
@@ -642,6 +643,15 @@ void loop() {
     }
 
     currentFlyFrame = (currentFlyFrame + 1) % 5;  // increment and loop to 0
+
+    if (pooping) {
+      currentPoopFrame++;
+      if (currentPoopFrame >= 26){
+        currentPoopFrame = 0;
+        pooping = false;
+        btnCooldown = false;
+      }
+    }
 
     if (cleaningPoo) {
       currentClnFrame++;
@@ -935,8 +945,8 @@ void feed() {
 }
 
 void poo() {
+  btnCooldown = true;
   pooLvl = 0;
-  delay(systemDelay);
   pooping = true;
   renderHome();
 }
@@ -992,7 +1002,7 @@ void doctor() {
     healthLvl = 0;
   }
   if (healthLvl > 4) {
-    healthLvl = 0;
+    healthLvl = 4;
   }
 
   display.clearDisplay();
@@ -1072,7 +1082,7 @@ void renderHome() {
     const unsigned char* blink_frames[] = { idle, blink, idle, blink };
 
     if (currentFrame >= 0 && currentFrame < 4) {
-        display.drawBitmap(16, 48, no_frames[currentFrame], 32, 32, 1);
+        display.drawBitmap(16, 48, bounce_frames[currentFrame], 32, 32, 1);
     }
   }
 
@@ -1122,11 +1132,11 @@ void renderHome() {
     btnCooldown = true;
     const unsigned char* foodBitmaps[4] = { pear_12x12, cookie_12x12, pizza_12x12, steak_12x12 };
     const unsigned char* eating_frames[26] = { open_mouth_0, open_mouth_0, open_mouth_0, open_mouth_1, open_mouth_2, open_mouth_3, open_mouth_3, open_mouth_3, open_mouth_2, open_mouth_0, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1, chewing_0, chewing_1, chewing_2, chewing_1 };
-   //                             0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26
+   //                       0  1  2  3  4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25
     int x_positions[26] = { 4, 4, 4, 4, 8, 12, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21 };
     int y_positions[26] = { 44, 44, 44, 44, 38, 32, 36, 40, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44 };
 
-    if (currentEatFrame >= 0 && currentEatFrame < 27) {
+    if (currentEatFrame >= 0 && currentEatFrame <= 26) {
       display.drawBitmap(x_positions[currentEatFrame], (y_positions[currentEatFrame] + 12), eating_frames[currentEatFrame], 24, 24, 1);
     }
 
@@ -1137,7 +1147,7 @@ void renderHome() {
       for (int i = 0; i < 4; i++) {
         if (foodOptions[currentFoodOption] == foodOptionsArray[i]) {
           display.drawBitmap(28, 64, foodBitmaps[i], 12, 12, 1);
-          break; // Exit the loop after drawing the bitmap
+          break;
         }
       }
     }
@@ -1145,29 +1155,15 @@ void renderHome() {
   }
 
   if (pooping) {      
-    
-    btnCooldown == true;   // 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
-    int x_positions[24] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
-    int y_positions[24] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
-                                        //    1      2      3      4      5      6      7      8      9     10     11     12     13     14     15     16     17     18     19     20     21     22     23     24
-    const unsigned char* hop_frames[24] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_3, hop_4, hop_4, hop_4, hop_4, hop_3, hop_5, hop_5, hop_5, hop_3, hop_4, hop_4, hop_4 };
+    btnCooldown == true;  // 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26
+    int x_positions[26] = { 50, 50, 42, 34, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 25, 31, 38, 46, 46, 46, 46 };
+    int y_positions[26] = { 66, 66, 51, 44, 48, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 46, 42, 51, 66, 66, 66, 66 };
+                                        //    1      2      3      4      5      6      7      8      9     10     11     12     13     14     15     16     17     18     19     20     21     22     23     24      25     26
+    const unsigned char* hop_frames[26] = { hop_0, hop_2, hop_1, hop_1, hop_1, hop_3, hop_3, hop_4, hop_4, hop_3, hop_3, hop_4, hop_4, hop_3, hop_3, hop_4, hop_4, hop_3, hop_3, hop_5, hop_5, hop_5, hop_3, hop_4, hop_4, hop_4 };
 
-    display.drawBitmap(8, 52, toilet, 24, 24, 1);
-    display.drawBitmap(x_positions[i_global], y_positions[i_global], hop_frames[i_global], 12, 12, 1);
-
-    // delay(i_global <= 5 ? 140 : 280);
-    if (i_global <= 5 || i_global >= 16) {
-      delay(140);
-    } else {
-      delay(280);
-    }
-
-    i_global++;
-    if (i_global >= sizeof(hop_frames) / sizeof(hop_frames[0])) {
-      i_global = 0;
-      pooping = false;
-      btnCooldown = false;
-      delay(1000);
+    if (currentPoopFrame >= 0 && currentPoopFrame <= 26) {
+      display.drawBitmap(8, 52, toilet, 24, 24, 1);
+      display.drawBitmap(x_positions[currentPoopFrame], (y_positions[currentPoopFrame]), hop_frames[currentPoopFrame], 12, 12, 1);
     }
   }
 
