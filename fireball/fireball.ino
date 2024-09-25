@@ -312,12 +312,12 @@ void renderFireball() {
     if (rightSide) {
       previousBirdX = 48 - currentFrame;
       previousBirdY = round(yPos);
-      display.drawBitmap((48 - (currentFrame + 8)), round(yPosIn8), block, 4, 4, 1);
+      // display.drawBitmap((48 - (currentFrame + 8)), round(yPosIn8), block, 4, 4, 1);
       display.drawBitmap((48 - currentFrame), round(yPos), bird_frames_right[currentFireFrame], 16, 16, 1);
     } else {
       previousBirdX = currentFrame;
       previousBirdY = round(yPos);
-      display.drawBitmap((currentFrame + 20), round(yPosIn8), block, 4, 4, 1);
+      // display.drawBitmap((currentFrame + 20), round(yPosIn8), block, 4, 4, 1);
       display.drawBitmap(currentFrame, round(yPos), bird_frames_left[currentFireFrame], 16, 16, 1);
     }
   }
