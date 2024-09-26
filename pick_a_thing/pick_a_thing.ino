@@ -83,6 +83,75 @@ const unsigned char box_open_2 [] PROGMEM = {
 	0x05, 0x22, 0x54, 0x00, 0x05, 0x04, 0x54, 0x00, 0x05, 0x08, 0x54, 0x00, 0x05, 0x00, 0x54, 0x00, 
 	0x04, 0x88, 0x94, 0x00, 0x04, 0x41, 0x14, 0x00, 0x04, 0x3e, 0x18, 0x00, 0x07, 0xff, 0xf0, 0x00
 };
+const unsigned char win_0 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+	0x00, 0x00, 0x03, 0xc0, 0x07, 0xc0, 0x07, 0xc0
+};
+const unsigned char win_1 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xc0, 0x07, 0xc0, 
+	0x07, 0xc0, 0x01, 0xc0, 0x21, 0xc0, 0x21, 0xc0
+};
+const unsigned char win_2 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xc0, 0x07, 0xc0, 0x07, 0xc0, 0x01, 0xc0, 0x21, 0xc0, 
+	0x21, 0xc0, 0xf9, 0xc0, 0x21, 0xc0, 0x21, 0xc0
+};
+const unsigned char win_3 [] PROGMEM = {
+  // 12x12px
+	0x03, 0xc0, 0x07, 0xc0, 0x07, 0xc0, 0x01, 0xc0, 0x21, 0xc0, 0x21, 0xc0, 0xf9, 0xc0, 0x21, 0xc0, 
+	0x21, 0xc0, 0x01, 0xc0, 0x03, 0xe0, 0x07, 0xf0
+};
+const unsigned char win_4 [] PROGMEM = {
+  // 12x12px
+	0x01, 0x40, 0x02, 0x80, 0x05, 0x40, 0x00, 0x80, 0x01, 0x40, 0x20, 0x80, 0x51, 0x40, 0x20, 0x80, 
+	0x01, 0x40, 0x00, 0x80, 0x01, 0x40, 0x02, 0xa0
+};
+const unsigned char win_5 [] PROGMEM = {
+  // 12x12px
+	0x01, 0x40, 0x00, 0x00, 0x05, 0x40, 0x00, 0x00, 0x01, 0x40, 0x00, 0x00, 0x41, 0x40, 0x20, 0x00, 
+	0x01, 0x40, 0x00, 0x00, 0x01, 0x40, 0x00, 0x00
+};
+const unsigned char win_6 [] PROGMEM = {
+	0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x40, 0x00, 0x00, 0x80, 
+	0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00
+};
+const unsigned char lose_0 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+	0x00, 0x00, 0x00, 0xc0, 0x01, 0xe0, 0x03, 0x30
+};
+const unsigned char lose_1 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x01, 0xe0, 
+	0x03, 0x30, 0x03, 0x30, 0x23, 0x30, 0x23, 0x30
+};
+const unsigned char lose_2 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x01, 0xe0, 0x03, 0x30, 0x03, 0x30, 0x23, 0x30, 
+	0x23, 0x30, 0xfb, 0x30, 0x23, 0x30, 0x23, 0x30
+};
+const unsigned char lose_3 [] PROGMEM = {
+  // 12x12px
+	0x00, 0xc0, 0x01, 0xe0, 0x03, 0x30, 0x03, 0x30, 0x23, 0x30, 0x23, 0x30, 0xfb, 0x30, 0x23, 0x30, 
+	0x23, 0x30, 0x03, 0x30, 0x01, 0xe0, 0x00, 0xc0
+};
+const unsigned char lose_4 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0xe0, 0x01, 0x10, 0x02, 0x20, 0x01, 0x10, 0x22, 0x20, 0x51, 0x10, 0x22, 0x20, 
+	0x01, 0x10, 0x02, 0x20, 0x01, 0xc0, 0x00, 0x00
+};
+const unsigned char lose_5 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0xa0, 0x01, 0x10, 0x02, 0x20, 0x00, 0x10, 0x02, 0x20, 0x40, 0x10, 0x22, 0x20, 
+	0x00, 0x10, 0x02, 0x20, 0x01, 0x40, 0x00, 0x00
+};
+const unsigned char lose_6 [] PROGMEM = {
+  // 12x12px
+	0x00, 0x00, 0x00, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00, 0x10, 0x02, 0x00, 0x40, 0x00, 0x00, 0x00, 
+	0x00, 0x10, 0x02, 0x00, 0x00, 0x40, 0x00, 0x00
+};
 const unsigned char top_select [] PROGMEM = {
 	// 7x6px
 	0x38, 0x38, 0xfe, 0x7c, 0x38, 0x10
@@ -110,6 +179,8 @@ int selectedBox = 0;
 
 int currentBoxFrame = 0;
 bool opened = false;
+
+int currentEndFrame = 0;
 
 void setup() {
   randomSeed(analogRead(0));
@@ -165,14 +236,19 @@ void loop() {
   if (animationMillis - previousAnimationMillis >= animationDelay) {
     previousAnimationMillis = animationMillis;  // reset timer
 
-    if(opened && currentBoxFrame >= 5){
+    if(opened && currentBoxFrame <= 4){
+      currentBoxFrame++;
+    }
+
+    if(opened && currentBoxFrame >= 5 && currentEndFrame >= 14){
       delay(1000);
+      currentEndFrame = 0;
       currentBoxFrame = 0;
       opened = false;
     }
 
-    if(opened && currentBoxFrame <= 4){
-      currentBoxFrame++;
+    if(opened && currentBoxFrame >= 5 && currentEndFrame <= 13){
+      currentEndFrame++;
     }
 
     currentFrame++;
@@ -202,6 +278,10 @@ void loop() {
 void renderGame() {
 
   const unsigned char* box_frames[6] = { box_open_0, box_open_0, box_open_1, box_open_1, box_open_2, box_open_2 };
+  const unsigned char* win_frames[15] = { win_0, win_1, win_2, win_3, win_3, win_3, win_3, win_3, win_3, win_3, win_3, win_3, win_4, win_5, win_6 };
+  const unsigned char* lose_frames[15] = { lose_0, lose_1, lose_2, lose_3, lose_3, lose_3, lose_3, lose_3, lose_3, lose_3, lose_3, lose_3, lose_4, lose_5, lose_6 };
+  const unsigned char plusYPositions[15] = { 35, 35, 35, 35, 33, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31 };
+
 
   selectedBox = (selectedBox + 3) % 3; // loop between the 3 selected boxes
 
@@ -209,47 +289,59 @@ void renderGame() {
 
   display.drawBitmap(0, 4, banner, 64, 16, 1);
   display.drawBitmap(0, 110, banner, 64, 16, 1);
-  display.drawBitmap(1, 54, table, 64, 32, 1);
+  display.drawBitmap(1, 5, table, 64, 32, 1);
   display.drawBitmap(10, 93, devil_head, 48, 17, 1);
 
-  int yPositions[8] = { 36, 36, 34, 34, 33, 33, 34, 34 };
+  int selectYPositions[8] = { 36, 36, 34, 34, 33, 33, 34, 34 };
 
   if(opened){
     if(selectedBox == 0){
-      display.setCursor(6, 36);
-      display.print("+");
-      display.setCursor(12, 36);
-      display.print(boxState[selectedBox]);
+      if(boxState[selectedBox] == 0 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(6, plusYPositions[currentEndFrame], lose_frames[currentEndFrame], 12, 12, 1);
+      }
+      if(boxState[selectedBox] == 1 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(6, plusYPositions[currentEndFrame], win_frames[currentEndFrame], 12, 12, 1);
+      }
+      if(boxState[selectedBox] == 2 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(6, plusYPositions[currentEndFrame], win_frames[currentEndFrame], 12, 12, 1);
+      }
 
       display.drawBitmap(-1, 36, box_frames[currentBoxFrame], 26, 24, 1);
       display.drawBitmap(24, 44, box, 17, 16, 1);
       display.drawBitmap(44, 44, box, 17, 16, 1);
 
-      // display.drawBitmap(7, 62, bottom_select, 11, 3, 1);
     }
     if(selectedBox == 1){
-      display.setCursor(26, 36);
-      display.print("+");
-      display.setCursor(32, 36);
-      display.print(boxState[selectedBox]);
+      if(boxState[selectedBox] == 0 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(26, plusYPositions[currentEndFrame], lose_frames[currentEndFrame], 12, 12, 1);
+      }
+      if(boxState[selectedBox] == 1 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(26, plusYPositions[currentEndFrame], win_frames[currentEndFrame], 12, 12, 1);
+      }
+      if(boxState[selectedBox] == 2 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(26, plusYPositions[currentEndFrame], win_frames[currentEndFrame], 12, 12, 1);
+      }
 
       display.drawBitmap(4, 44, box, 17, 16, 1);
       display.drawBitmap(19, 36, box_frames[currentBoxFrame], 26, 24, 1);
       display.drawBitmap(44, 44, box, 17, 16, 1);
 
-      // display.drawBitmap(27, 62, bottom_select, 11, 3, 1);
     }
     if(selectedBox == 2){
-      display.setCursor(46, 36);
-      display.print("+");
-      display.setCursor(52, 36);
-      display.print(boxState[selectedBox]);
+      if(boxState[selectedBox] == 0 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(46, plusYPositions[currentEndFrame], lose_frames[currentEndFrame], 12, 12, 1);
+      }
+      if(boxState[selectedBox] == 1 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(46, plusYPositions[currentEndFrame], win_frames[currentEndFrame], 12, 12, 1);
+      }
+      if(boxState[selectedBox] == 2 && currentBoxFrame >= 5 && currentEndFrame <= 13){
+        display.drawBitmap(46, plusYPositions[currentEndFrame], win_frames[currentEndFrame], 12, 12, 1);
+      }
       
       display.drawBitmap(4, 44, box, 17, 16, 1);
       display.drawBitmap(24, 44, box, 17, 16, 1);
       display.drawBitmap(39, 36, box_frames[currentBoxFrame], 26, 24, 1);
 
-      // display.drawBitmap(47, 62, bottom_select, 11, 3, 1);
     }
   }else{
 
@@ -257,15 +349,15 @@ void renderGame() {
     display.drawBitmap(24, 44, box, 17, 16, 1);
     display.drawBitmap(44, 44, box, 17, 16, 1);
     if(selectedBox == 0){
-      display.drawBitmap(9, yPositions[currentFrame], top_select, 7, 6, 1);
+      display.drawBitmap(9, selectYPositions[currentFrame], top_select, 7, 6, 1);
       // display.drawBitmap(7, 62, bottom_select, 11, 3, 1);
     }
     if(selectedBox == 1){
-      display.drawBitmap(29, yPositions[currentFrame], top_select, 7, 6, 1);
+      display.drawBitmap(29, selectYPositions[currentFrame], top_select, 7, 6, 1);
       // display.drawBitmap(27, 62, bottom_select, 11, 3, 1);
     }
     if(selectedBox == 2){
-      display.drawBitmap(49, yPositions[currentFrame], top_select, 7, 6, 1);
+      display.drawBitmap(49, selectYPositions[currentFrame], top_select, 7, 6, 1);
       // display.drawBitmap(47, 62, bottom_select, 11, 3, 1);
     }
   }
